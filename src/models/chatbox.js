@@ -9,6 +9,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       Chatboxes.belongsToMany(models.Users, {
+        as: "Chatbox_Users",
         through: "Chatbox_User",
         foreignKey: "chatbox_id",
       });

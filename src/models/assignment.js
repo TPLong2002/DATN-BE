@@ -10,6 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       Assignments.belongsTo(models.Users, { foreignKey: "teacher_id" });
       Assignments.belongsToMany(models.Classes, {
+        as: "A_C",
         through: "Assignment_Classes",
         foreignKey: "assignment_id",
       });

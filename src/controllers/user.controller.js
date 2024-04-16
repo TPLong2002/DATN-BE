@@ -1,7 +1,7 @@
 import userServices from "../services/user.service";
 const getAllUsers = async (req, res) => {
   try {
-    response = await userServices.getAllUsers();
+    var response = await userServices.getAllUsers();
     return res.status(response.status).json({
       code: response.code,
       message: response.message,

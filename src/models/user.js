@@ -8,37 +8,44 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Users.belongsTo(models.Groups);
+      Users.belongsTo(models.Groups, { foreignKey: "group_id" });
       Users.belongsToMany(models.Users, {
+        as: "User_Parents",
         through: "parent_student",
         foreignKey: "parent_id",
       });
       Users.belongsToMany(models.Users, {
+        as: "User_Students",
         through: "parent_student",
         foreignKey: "student_id",
       });
       Users.belongsToMany(models.Fees, {
+        as: "User_Fees",
         through: "User_Fee",
         foreignKey: "user_id",
       });
       Users.hasMany(models.Paymenthistories, { foreignKey: "user_id" });
       Users.hasOne(models.Profiles, { foreignKey: "user_id" });
       Users.hasOne(models.Classes, { foreignKey: "gvcn_id" });
-      Users.hasOne(models.Classes, {
+      Users.belongsToMany(models.Classes, {
+        as: "Student_Classes",
         through: "Class_User",
         foreignKey: "user_id",
       });
       Users.belongsToMany(models.Subjects, {
+        as: "User_Subjects",
         through: "Class_Subject_User",
         foreignKey: "teacher_id",
       });
       Users.belongsToMany(models.Classes, {
+        as: "Teacher_Classes",
         through: "Class_Subject_User",
         foreignKey: "teacher_id",
       });
       Users.hasMany(models.Assignments, { foreignKey: "teacher_id" });
       Users.hasOne(models.Transcripts, { foreignKey: "user_id" });
       Users.belongsToMany(models.Chatboxes, {
+        as: "User_Chatboxes",
         through: "Chatbox_User",
         foreignKey: "user_id",
       });

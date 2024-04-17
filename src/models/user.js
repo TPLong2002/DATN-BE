@@ -28,8 +28,9 @@ module.exports = (sequelize, DataTypes) => {
       Users.hasOne(models.Profiles, { foreignKey: "user_id" });
       Users.hasOne(models.Classes, { foreignKey: "gvcn_id" });
       Users.belongsToMany(models.Classes, {
-        as: "Student_Classes",
+        as: "Student_Class",
         through: "Class_User",
+
         foreignKey: "user_id",
       });
       Users.belongsToMany(models.Subjects, {

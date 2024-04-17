@@ -4,20 +4,29 @@
     "password": "Long2002",
     "database": "datn_db",
     "host": "nodejs.c7qcq2qmy4ze.ap-southeast-1.rds.amazonaws.com",
-    "dialect": "mysql"
+    "dialect": "mysql",
+    "define": {
+      "freezeTableName": true
+    }
   },
   "test": {
     "username": "root",
     "password": null,
     "database": "database_test",
     "host": "127.0.0.1",
-    "dialect": "mysql"
+    "dialect": "mysql",
+    "define": {
+      "freezeTableName": true
+    }
   },
   "production": {
     "username": "root",
     "password": null,
     "database": "database_production",
     "host": "127.0.0.1",
-    "dialect": "mysql"
+    "dialect": "mysql",
+    "define": {
+      "freezeTableName": true
+    }
   }
 }

@@ -25,6 +25,7 @@ module.exports = (sequelize, DataTypes) => {
   Subjects.init(
     {
       name: DataTypes.STRING,
+      ishidden: DataTypes.INTEGER,
     },
     {
       sequelize,

@@ -6,6 +6,8 @@ import feeRoutes from "./fee.route";
 import markTypeRoutes from "./marktype.route";
 import semesterRoutes from "./semester.route";
 import conductRoutes from "./conduct.route";
+import newsRoutes from "./news.route";
+import subjectRoutes from "./subject.route";
 
 const router = Router();
 const initApiRoutes = (app) => {
@@ -16,6 +18,8 @@ const initApiRoutes = (app) => {
   router.use("/marktype", markTypeRoutes);
   router.use("/semester", semesterRoutes);
   router.use("/conduct", conductRoutes);
+  router.use("/news", newsRoutes);
+  router.use("/subject", subjectRoutes);
   app.use("/api/v1/", router);
 };
 export default initApiRoutes;

@@ -1,14 +1,29 @@
 import db from "../models";
 const getProfileByUserId = async (userId) => {
   try {
-    const profile = await db.Profiles.findOne({
+    const [profile, created] = await db.Profiles.findOrCreate({
       where: { user_id: userId },
+      defaults: {
+        user_id: userId,
+        phoneNumber: "Thêm số điện thoại",
+        firstName: "Thêm tên",
+        lastName: "Thêm họ",
+        avt: "",
+        address: "Thêm địa chỉ",
+        dateOfBirth: "Thêm ngày tháng năm sinh",
+      },
     });
-    if (profile) {
-      return { status: 200, code: 0, message: "success", data: profile };
+    if (created) {
+      return {
+        status: 200,
+        code: 0,
+        message: "created success",
+        data: profile,
+      };
     } else {
-      const profile = await db.Profiles.create({ user_id: userId });
-      return { status: 200, code: 0, message: "success", data: profile };
+      if (profile) {
+        return { status: 200, code: 0, message: "success", data: profile };
+      } else return { status: 500, code: 1, message: "fail", data: "" };
     }
   } catch (error) {
     return { status: 500, code: -1, message: error.message, data: "" };

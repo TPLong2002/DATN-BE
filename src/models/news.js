@@ -9,6 +9,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       News.belongsTo(models.Users, {
+        as: "author",
         foreignKey: "user_id",
       });
     }
@@ -18,6 +19,7 @@ module.exports = (sequelize, DataTypes) => {
       user_id: DataTypes.INTEGER,
       title: DataTypes.STRING,
       content: DataTypes.STRING,
+      ishidden: DataTypes.INTEGER,
     },
     {
       sequelize,

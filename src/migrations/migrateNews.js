@@ -18,6 +18,10 @@ module.exports = {
       content: {
         type: Sequelize.STRING,
       },
+      ishidden: {
+        defaultValue: 0,
+        type: Sequelize.INTEGER,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

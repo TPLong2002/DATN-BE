@@ -21,7 +21,9 @@ module.exports = {
       endDate: {
         type: Sequelize.DATE,
       },
-
+      ishidden: {
+        type: Sequelize.INTEGER,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

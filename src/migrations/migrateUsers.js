@@ -23,9 +23,11 @@ module.exports = {
       },
       islocked: {
         type: Sequelize.INTEGER,
+        defaultValue: 0,
       },
       isdeleted: {
         type: Sequelize.INTEGER,
+        defaultValue: 0,
       },
       createdAt: {
         allowNull: false,

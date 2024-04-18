@@ -24,6 +24,7 @@ module.exports = (sequelize, DataTypes) => {
       price: DataTypes.FLOAT,
       startDate: DataTypes.DATE,
       endDate: DataTypes.DATE,
+      ishidden: DataTypes.INTEGER,
     },
     {
       sequelize,

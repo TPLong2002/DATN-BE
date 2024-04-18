@@ -15,6 +15,12 @@ module.exports = {
       gvcn_id: {
         type: Sequelize.STRING,
       },
+      ishidden: {
+        type: Sequelize.INTEGER,
+      },
+      schoolyear: {
+        type: Sequelize.STRING,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

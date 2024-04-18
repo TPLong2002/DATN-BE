@@ -3,7 +3,9 @@ import userRoutes from "./user.route";
 import profileRoutes from "./profile.route";
 import classRoutes from "./class.route";
 import feeRoutes from "./fee.route";
-import MarkTypeRoutes from "./marktype.route";
+import markTypeRoutes from "./marktype.route";
+import semesterRoutes from "./semester.route";
+import conductRoutes from "./conduct.route";
 
 const router = Router();
 const initApiRoutes = (app) => {
@@ -11,7 +13,9 @@ const initApiRoutes = (app) => {
   router.use("/profile", profileRoutes);
   router.use("/class", classRoutes);
   router.use("/fee", feeRoutes);
-  router.use("/marktype", MarkTypeRoutes);
+  router.use("/marktype", markTypeRoutes);
+  router.use("/semester", semesterRoutes);
+  router.use("/conduct", conductRoutes);
   app.use("/api/v1/", router);
 };
 export default initApiRoutes;

@@ -15,7 +15,8 @@ module.exports = (sequelize, DataTypes) => {
   }
   RankedAcademics.init(
     {
-      name: DataTypes.INTEGER,
+      name: DataTypes.STRING,
+      ishidden: DataTypes.INTEGER,
     },
     {
       sequelize,

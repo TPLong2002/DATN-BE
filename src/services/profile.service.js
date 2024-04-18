@@ -4,7 +4,12 @@ const getProfileByUserId = async (userId) => {
     const profile = await db.Profiles.findOne({
       where: { user_id: userId },
     });
-    return { status: 200, code: 0, message: "success", data: profile };
+    if (profile) {
+      return { status: 200, code: 0, message: "success", data: profile };
+    } else {
+      const profile = await db.Profiles.create({ user_id: userId });
+      return { status: 200, code: 0, message: "success", data: profile };
+    }
   } catch (error) {
     return { status: 500, code: -1, message: error.message, data: "" };
   }
@@ -19,4 +24,5 @@ const updateProfileByUserId = async (data) => {
     return { status: 500, code: -1, message: error.message, data: "" };
   }
 };
+
 module.exports = { getProfileByUserId, updateProfileByUserId };

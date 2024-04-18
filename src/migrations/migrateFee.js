@@ -22,6 +22,7 @@ module.exports = {
         type: Sequelize.DATE,
       },
       ishidden: {
+        defaultValue: 0,
         type: Sequelize.INTEGER,
       },
       createdAt: {

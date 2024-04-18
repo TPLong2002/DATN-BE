@@ -24,4 +24,14 @@ const updateMarkType = async (req, res) => {
       .json({ status: 500, code: -1, message: error.message, data: "" });
   }
 };
-module.exports = { getAllMarkType, updateMarkType };
+const createMarkType = async (req, res) => {
+  try {
+    const response = await marktypeService.createMarkType(req.body);
+    return res.status(response.status).json(response);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ status: 500, code: -1, message: error.message, data: "" });
+  }
+};
+module.exports = { getAllMarkType, updateMarkType, createMarkType };

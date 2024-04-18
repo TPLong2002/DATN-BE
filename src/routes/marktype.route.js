@@ -4,6 +4,5 @@ const router = express.Router();
 
 router.get("/", marktypeController.getAllMarkType);
 router.put("/", marktypeController.updateMarkType);
-// router.put("/", marktypeController.updateFee);
-
+router.post("/", marktypeController.createMarkType);
 export default router;

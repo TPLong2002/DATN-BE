@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
       Transcripts.belongsTo(models.Marktypes, { foreignKey: "marktype_id" });
       Transcripts.belongsTo(models.Subjects, { foreignKey: "subject_id" });
       Transcripts.belongsTo(models.Semesters, { foreignKey: "semester_id" });
+      Transcripts.belongsTo(models.Conducts, { foreignKey: "conduct_id" });
       Transcripts.belongsTo(models.RankedAcademics, {
         foreignKey: "rankedacademic_id",
       });
@@ -22,9 +23,10 @@ module.exports = (sequelize, DataTypes) => {
       user_id: DataTypes.INTEGER,
       subject_id: DataTypes.INTEGER,
       marktype_id: DataTypes.INTEGER,
-      mark: DataTypes.INTEGER,
+      mark: DataTypes.FLOAT,
       semester_id: DataTypes.INTEGER,
-      rankedacademic_id: DataTypes.STRING,
+      rankedacademic_id: DataTypes.INTEGER,
+      conduct_id: DataTypes.INTEGER,
     },
     {
       sequelize,

@@ -10,13 +10,13 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       Classes.belongsTo(models.Users, { foreignKey: "gvcn_id", as: "GVCN" });
       Classes.belongsToMany(models.Users, {
-        as: "Class_Student",
+        as: "Class_Students",
         through: "Class_User",
         foreignKey: "class_id",
       });
       Classes.belongsToMany(models.Assignments, {
-        as: "C_A",
-        through: "Assignment_Classes",
+        as: "Class_Assignments",
+        through: "Assignment_Class",
         foreignKey: "class_id",
       });
       Classes.belongsToMany(models.Subjects, {

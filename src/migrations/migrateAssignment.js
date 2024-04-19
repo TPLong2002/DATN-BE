@@ -12,14 +12,24 @@ module.exports = {
       name: {
         type: Sequelize.STRING,
       },
+      content: {
+        type: Sequelize.STRING,
+      },
       teacher_id: {
         type: Sequelize.INTEGER,
       },
       subject_id: {
         type: Sequelize.INTEGER,
       },
+      startdate: {
+        type: Sequelize.DATE,
+      },
       deadline: {
         type: Sequelize.DATE,
+      },
+      ishidden: {
+        defaultValue: 0,
+        type: Sequelize.INTEGER,
       },
       createdAt: {
         allowNull: false,

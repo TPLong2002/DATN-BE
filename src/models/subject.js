@@ -20,6 +20,11 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "subject_id",
       });
       Subjects.hasMany(models.Assignments, { foreignKey: "subject_id" });
+      Subjects.belongsToMany(models.Users, {
+        as: "SubjectUsers",
+        through: "User_Subject",
+        foreignKey: "subject_id",
+      });
     }
   }
   Subjects.init(

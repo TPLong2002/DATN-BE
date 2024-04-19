@@ -8,6 +8,9 @@ import semesterRoutes from "./semester.route";
 import conductRoutes from "./conduct.route";
 import newsRoutes from "./news.route";
 import subjectRoutes from "./subject.route";
+import assignmentRoutes from "./assignment.route";
+import class_subject_userRoutes from "./class_subject_user.route";
+import teacherRoutes from "./teacher.route";
 
 const router = Router();
 const initApiRoutes = (app) => {
@@ -20,6 +23,9 @@ const initApiRoutes = (app) => {
   router.use("/conduct", conductRoutes);
   router.use("/news", newsRoutes);
   router.use("/subject", subjectRoutes);
+  router.use("/assignment", assignmentRoutes);
+  router.use("/csu", class_subject_userRoutes);
+  router.use("/teacher", teacherRoutes);
   app.use("/api/v1/", router);
 };
 export default initApiRoutes;

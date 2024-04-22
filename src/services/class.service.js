@@ -77,6 +77,7 @@ const hiddenClass = async (data) => {
     return { status: 500, code: -1, message: error.message, data: "" };
   }
 };
+
 module.exports = {
   getAllClass,
   getClassById,

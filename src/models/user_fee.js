@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       fee_id: DataTypes.INTEGER,
       user_id: DataTypes.INTEGER,
+      ishidden: DataTypes.INTEGER,
     },
     {
       sequelize,

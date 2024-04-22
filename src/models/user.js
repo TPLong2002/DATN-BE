@@ -8,15 +8,15 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Users.belongsTo(models.Groups, { foreignKey: "group_id" });
+      Users.belongsTo(models.Groups, { foreignKey: "group_id", as: "Group" });
       Users.belongsToMany(models.Users, {
         as: "User_Parents",
-        through: "parent_student",
+        through: "Parent_Student",
         foreignKey: "parent_id",
       });
       Users.belongsToMany(models.Users, {
         as: "User_Students",
-        through: "parent_student",
+        through: "Parent_Student",
         foreignKey: "student_id",
       });
       Users.belongsToMany(models.Fees, {
@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
       });
       Users.hasMany(models.Paymenthistories, { foreignKey: "user_id" });
       Users.hasOne(models.Profiles, { foreignKey: "user_id" });
-      Users.hasOne(models.Classes, { foreignKey: "gvcn_id" });
+      Users.hasOne(models.Classes, { foreignKey: "gvcn_id", as: "GVCN" });
       Users.belongsToMany(models.Classes, {
         as: "Student_Classes",
         through: "Class_User",

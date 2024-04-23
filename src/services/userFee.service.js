@@ -1,7 +1,7 @@
 import db from "../models";
-const getUserFee = async (userId) => {
+const getUserFeeByUserId = async (userId) => {
   try {
-    const res = await db.User_Fee.findOne({ where: { user_id: userId } });
+    const res = await db.User_Fee.findAll({ where: { user_id: userId } });
     if (res) {
       return { status: 200, code: 0, message: "User fee found", data: res };
     } else {
@@ -60,4 +60,9 @@ const updateUserFee = async (data) => {
     return { status: 500, code: -1, message: error.message, data: null };
   }
 };
-module.exports = { getUserFee, getUserFees, createUserFee, updateUserFee };
+module.exports = {
+  getUserFeeByUserId,
+  getUserFees,
+  createUserFee,
+  updateUserFee,
+};

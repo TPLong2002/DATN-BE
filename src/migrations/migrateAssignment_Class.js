@@ -15,6 +15,9 @@ module.exports = {
       assignment_id: {
         type: Sequelize.INTEGER,
       },
+      ishidden: {
+        type: Sequelize.INTEGER,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

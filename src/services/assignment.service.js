@@ -1,16 +1,5 @@
 import db from "../models";
-const getAllAssignments = async () => {
-  try {
-    const res = await db.Assignments.findAll();
-    if (res) {
-      return { status: 200, code: 0, message: "success", data: res };
-    } else {
-      return { status: 500, code: 1, message: "fail", data: "" };
-    }
-  } catch (error) {
-    return { status: 500, code: -1, message: error.message, data: "" };
-  }
-};
+
 const getAssignments = async () => {
   try {
     const res = await db.Assignments.findAll({ where: { ishidden: 0 } });
@@ -78,8 +67,8 @@ const getAssignmentClass = async (id) => {
       include: [
         {
           model: db.Classes,
-          as: "A_C",
-          include: { model: db.Users, as: "Class_Student" },
+          as: "Assignment_Classes",
+          include: { model: db.Users, as: "Class_Students" },
         },
       ],
     });
@@ -93,7 +82,6 @@ const getAssignmentClass = async (id) => {
   }
 };
 module.exports = {
-  getAllAssignments,
   getAssignments,
   getAssignmentById,
   createAssignment,

@@ -2,7 +2,7 @@ import userFeeService from "../services/userFee.service";
 const getUserFee = async (req, res) => {
   try {
     if (req.query.id) {
-      const response = await userFeeService.getUserFee(req.params.userId);
+      const response = await userFeeService.getUserFeeByUserId(req.query.id);
       return res.status(response.status).json(response);
     } else {
       const response = await userFeeService.getUserFees();

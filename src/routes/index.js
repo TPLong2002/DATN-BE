@@ -13,12 +13,14 @@ import class_subject_userRoutes from "./class_subject_user.route";
 import teacherRoutes from "./teacher.route";
 import userFeeRoutes from "./userFee.route";
 import parentRoutes from "./parent.route";
+import studentRoutes from "./student.route";
+import assignment_classRoutes from "./assignment_class.route";
 
 const router = Router();
 const initApiRoutes = (app) => {
   /**
    * @openapi
-   * /ping:
+   * /api/v1/ping:
    *  get:
    *     tags:
    *     - Ping
@@ -42,6 +44,8 @@ const initApiRoutes = (app) => {
   router.use("/teacher", teacherRoutes);
   router.use("/userfee", userFeeRoutes);
   router.use("/parent", parentRoutes);
+  router.use("/student", studentRoutes);
+  router.use("/assignment_class", assignment_classRoutes);
   app.use("/api/v1/", router);
 };
 export default initApiRoutes;

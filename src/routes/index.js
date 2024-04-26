@@ -15,20 +15,10 @@ import userFeeRoutes from "./userFee.route";
 import parentRoutes from "./parent.route";
 import studentRoutes from "./student.route";
 import assignment_classRoutes from "./assignment_class.route";
+import transcriptsRoutes from "./transcript.route";
 
 const router = Router();
 const initApiRoutes = (app) => {
-  /**
-   * @openapi
-   * /api/v1/ping:
-   *  get:
-   *     tags:
-   *     - Ping
-   *     description: Returns API operational status
-   *     responses:
-   *       200:
-   *         description: API is  running
-   */
   router.get("/ping", (req, res) => res.sendStatus(200));
   router.use("/user", userRoutes);
   router.use("/profile", profileRoutes);
@@ -46,6 +36,7 @@ const initApiRoutes = (app) => {
   router.use("/parent", parentRoutes);
   router.use("/student", studentRoutes);
   router.use("/assignment_class", assignment_classRoutes);
+  router.use("/transcript", transcriptsRoutes);
   app.use("/api/v1/", router);
 };
 export default initApiRoutes;

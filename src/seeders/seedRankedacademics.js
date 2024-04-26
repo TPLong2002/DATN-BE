@@ -29,6 +29,11 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: new Date(),
       },
+      {
+        name: "NA",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
     ]);
   },
 

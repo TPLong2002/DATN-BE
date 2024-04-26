@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
         through: "Class_Subject_User",
         foreignKey: "subject_id",
       });
-      Subjects.hasMany(models.Transcripts, { foreignKey: "subject_id" });
+      Subjects.hasMany(models.Marks, { foreignKey: "subject_id" });
       Subjects.belongsToMany(models.Classes, {
         as: "Subject_Classes",
         through: "Class_Subject_User",

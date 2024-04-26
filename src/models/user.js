@@ -48,7 +48,9 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "teacher_id",
       });
       Users.hasMany(models.Assignments, { foreignKey: "teacher_id" });
-      Users.hasOne(models.Transcripts, { foreignKey: "user_id" });
+      Users.hasOne(models.Transcripts, {
+        foreignKey: "user_id",
+      });
       Users.belongsToMany(models.Chatboxes, {
         as: "User_Chatboxes",
         through: "Chatbox_User",
@@ -56,6 +58,7 @@ module.exports = (sequelize, DataTypes) => {
       });
       Users.hasMany(models.Messages, { foreignKey: "sender_id" });
       Users.hasMany(models.News, { foreignKey: "user_id" });
+      Users.hasMany(models.Marks, { foreignKey: "user_id" });
     }
   }
   Users.init(

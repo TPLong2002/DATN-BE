@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Marktypes.hasMany(models.Transcripts, { foreignKey: "marktype_id" });
+      Marktypes.hasMany(models.Marks, { foreignKey: "marktype_id" });
     }
   }
   Marktypes.init(

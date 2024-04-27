@@ -16,6 +16,7 @@ import parentRoutes from "./parent.route";
 import studentRoutes from "./student.route";
 import assignment_classRoutes from "./assignment_class.route";
 import transcriptsRoutes from "./transcript.route";
+import markRoutes from "./mark.route";
 
 const router = Router();
 const initApiRoutes = (app) => {
@@ -37,6 +38,7 @@ const initApiRoutes = (app) => {
   router.use("/student", studentRoutes);
   router.use("/assignment_class", assignment_classRoutes);
   router.use("/transcript", transcriptsRoutes);
+  router.use("/mark", markRoutes);
   app.use("/api/v1/", router);
 };
 export default initApiRoutes;

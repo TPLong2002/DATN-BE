@@ -1,7 +1,7 @@
 import db from "../models";
 const getTranscriptsByStudentId = async (studentId) => {
   try {
-    const res = await db.Users.findOne({
+    const [user, created] = await db.Users.findOrCreate({
       where: { id: studentId },
       include: [
         {
@@ -13,11 +13,33 @@ const getTranscriptsByStudentId = async (studentId) => {
           ],
         },
       ],
+      defaults: {
+        name: "Transcript 0",
+        user_id: studentId,
+        rankedacademic_id: 6,
+        conduct_id: 5,
+        semester_id: 1,
+        schoolyear: "2017-2018",
+      },
     });
-    if (res) {
-      return { status: 200, message: "success", code: 0, data: res };
+    if (created) {
+      return {
+        status: 200,
+        message: "create new transcript success",
+        code: 0,
+        data: res,
+      };
     } else {
-      return { status: 500, message: "not found", code: 1, data: null };
+      if (user) {
+        return {
+          status: 200,
+          message: "success",
+          code: 0,
+          data: user,
+        };
+      } else {
+        return { status: 500, message: "not found", code: 1, data: null };
+      }
     }
   } catch (error) {
     return { status: 500, message: error.message, code: -1, data: null };

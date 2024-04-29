@@ -35,14 +35,25 @@ const getAllUsers = async () => {
     };
   }
 };
-const getUsers = async () => {
+const getUsers = async (limit, page) => {
+  if (!limit) limit = 10;
+  if (!page) page = 1;
+  const offset = (page - 1) * limit;
   try {
-    const users = await db.Users.findAll({
+    const { count, rows } = await db.Users.findAndCountAll({
       where: { isdeleted: 0 },
+      attributes: ["id", "username", "email", "group_id"],
+      limit: +limit,
+      offset: +offset,
       raw: true,
       nest: true,
     });
-    return { status: 200, code: 0, message: "success", data: users };
+    return {
+      status: 200,
+      code: 0,
+      message: "success",
+      data: { rows, count },
+    };
   } catch (err) {
     console.log(err);
     return {
@@ -54,6 +65,7 @@ const getUsers = async () => {
     };
   }
 };
+
 const getUsersDelete = async () => {
   try {
     const users = await db.Users.findAll({

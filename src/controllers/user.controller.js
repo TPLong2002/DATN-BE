@@ -13,7 +13,7 @@ const getAllUsers = async (req, res) => {
 };
 const getUsers = async (req, res) => {
   try {
-    var response = await userServices.getUsers();
+    var response = await userServices.getUsers(req.query.limit, req.query.page);
     return res.status(response.status).json({
       code: response.code,
       message: response.message,

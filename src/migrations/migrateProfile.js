@@ -30,6 +30,9 @@ module.exports = {
       dateOfBirth: {
         type: Sequelize.DATE,
       },
+      CCCD: {
+        type: Sequelize.STRING,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

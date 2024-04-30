@@ -11,6 +11,7 @@ const getProfileByUserId = async (userId) => {
         avt: "",
         address: "Thêm địa chỉ",
         dateOfBirth: "Thêm ngày tháng năm sinh",
+        CCCD: "Thêm số CCCD",
       },
     });
     if (created) {

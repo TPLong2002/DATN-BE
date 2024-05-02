@@ -13,6 +13,9 @@ const getProfileByUserId = async (userId) => {
         dateOfBirth: "Thêm ngày tháng năm sinh",
         CCCD: "Thêm số CCCD",
       },
+      include: { model: db.Users, as: "User", attributes: ["id", "email"] },
+      raw: true,
+      nest: true,
     });
     if (created) {
       return {
@@ -23,7 +26,13 @@ const getProfileByUserId = async (userId) => {
       };
     } else {
       if (profile) {
-        return { status: 200, code: 0, message: "success", data: profile };
+        console.log(profile);
+        return {
+          status: 200,
+          code: 0,
+          message: "success",
+          data: { ...profile, email: profile.User.email },
+        };
       } else return { status: 500, code: 1, message: "fail", data: "" };
     }
   } catch (error) {

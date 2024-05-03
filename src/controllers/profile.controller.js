@@ -24,4 +24,20 @@ const updateProfileByUserId = async (req, res) => {
     return res.status(500).json({ error: err.message });
   }
 };
-module.exports = { getProfileByUserId, updateProfileByUserId };
+const getRelativesByUserId = async (req, res) => {
+  try {
+    var response = await profileService.getRelativesByUserId(req.query.id);
+    return res.status(response.status).json({
+      code: response.code,
+      message: response.message,
+      data: response.data,
+    });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+module.exports = {
+  getProfileByUserId,
+  updateProfileByUserId,
+  getRelativesByUserId,
+};

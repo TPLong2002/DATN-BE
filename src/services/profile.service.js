@@ -13,7 +13,11 @@ const getProfileByUserId = async (userId) => {
         dateOfBirth: "",
         CCCD: "",
       },
-      include: { model: db.Users, as: "User", attributes: ["id", "email"] },
+      include: {
+        model: db.Users,
+        as: "User",
+        attributes: ["id", "email", "password"],
+      },
       raw: true,
       nest: true,
     });
@@ -26,12 +30,18 @@ const getProfileByUserId = async (userId) => {
       };
     } else {
       if (profile) {
-        console.log(profile);
+        const { User, ...profileData } = profile;
         return {
           status: 200,
           code: 0,
           message: "success",
-          data: [{ ...profile, email: profile.User.email }],
+          data: [
+            {
+              ...profileData,
+              email: User.email,
+              password: User.password,
+            },
+          ],
         };
       } else return { status: 500, code: 1, message: "fail", data: [] };
     }
@@ -40,46 +50,99 @@ const getProfileByUserId = async (userId) => {
   }
 };
 const updateProfileByUserId = async (data) => {
-  console.log(data);
+  const t = await db.sequelize.transaction();
   try {
-    const profile = await db.Profiles.update(
-      {
-        phoneNumber: data.phoneNumber,
-        firstName: data.firstName,
-        lastName: data.lastName,
-        avt: data.avt,
-        address: data.address,
-        dateOfBirth: data.dateOfBirth,
-        CCCD: data.CCCD,
-      },
-      {
-        where: { user_id: data.user_id },
-      }
+    const { email, id, ...defaultdata } = data;
+
+    // Cập nhật mật khẩu trong bảng user
+    const updatedUser = await db.Users.update(
+      { password: data.password }, // Thay đổi password thành giá trị mới
+      { where: { id: data.user_id }, transaction: t }
     );
-    return { status: 200, code: 0, message: "success", data: profile };
+
+    // Cập nhật thông tin trong bảng profiles
+    const [profile, created] = await db.Profiles.findOrCreate({
+      where: { user_id: data.user_id },
+      defaults: {
+        phoneNumber: defaultdata.phoneNumber,
+        firstName: defaultdata.firstName,
+        lastName: defaultdata.lastName,
+        avt: defaultdata.avt,
+        address: defaultdata.address,
+        dateOfBirth: defaultdata.dateOfBirth,
+        CCCD: defaultdata.CCCD,
+      },
+      transaction: t,
+    });
+
+    if (!created && profile) {
+      // Nếu profile tồn tại và không phải là lần đầu tạo mới, cập nhật thông tin
+      await db.Profiles.update(
+        {
+          phoneNumber: defaultdata.phoneNumber,
+          firstName: defaultdata.firstName,
+          lastName: defaultdata.lastName,
+          avt: defaultdata.avt,
+          address: defaultdata.address,
+          dateOfBirth: defaultdata.dateOfBirth,
+          CCCD: defaultdata.CCCD,
+        },
+        { where: { user_id: data.user_id }, transaction: t }
+      );
+    }
+
+    await t.commit(); // Commit giao dịch
+    return {
+      status: 200,
+      code: 0,
+      message: "success",
+      data: { user: updatedUser, profile: profile },
+    };
   } catch (error) {
+    await t.rollback(); // Rollback giao dịch nếu có lỗi
     return { status: 500, code: -1, message: error.message, data: "" };
   }
 };
+
 const getRelativesByUserId = async (userId) => {
   try {
-    const res = await db.Users.findOne({
+    const user = await db.Users.findOne({
+      where: { id: userId },
+      include: { model: db.Groups, as: "Group" },
+      raw: true,
+      nest: true,
+    });
+    let isRelative = null;
+    if (user.Group.name == "parent") {
+      isRelative = "User_Parents";
+    }
+    if (user.Group.name == "student") {
+      isRelative = "User_Students";
+    }
+    const res = await db.Users.findAll({
       where: { id: userId },
       include: [
         {
-          as: "User_Parents",
+          as: isRelative,
           model: db.Users,
           include: {
             model: db.Profiles,
           },
+          attributes: ["id", "email", "password"],
         },
       ],
+      raw: true,
+      nest: true,
     });
-    const relatives = res.User_Parents.map((parent) => {
-      return parent.Profile;
-    });
-    console.log(relatives);
-    if (relatives) {
+    if (res) {
+      const relatives = res.map((parent) => {
+        return {
+          ...parent[isRelative].Profile,
+          email: parent[isRelative].email,
+          password: parent[isRelative].password,
+          user_id: parent[isRelative].id,
+        };
+      });
       return {
         status: 200,
         code: 0,

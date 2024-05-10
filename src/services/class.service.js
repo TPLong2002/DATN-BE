@@ -1,13 +1,29 @@
 import db from "../models";
 
-const getAllClass = async () => {
+const getAllClass = async (limit, page) => {
+  if (!limit) limit = 10;
+  if (!page) page = 1;
+  const offset = (page - 1) * limit;
   try {
-    const res = await db.Classes.findAll({});
-    if (res) {
-      return { status: 200, code: 0, message: "success", data: res };
-    } else {
-      return { status: 500, code: 1, message: "fail", data: "" };
-    }
+    const { count, rows } = await db.Classes.findAndCountAll({
+      where: { ishidden: 0 },
+      include: {
+        model: db.Users,
+        as: "GVCN",
+        include: { model: db.Profiles, attributes: ["firstname", "lastname"] },
+      },
+      limit: +limit,
+      offset: +offset,
+      raw: true,
+      nest: true,
+    });
+
+    return {
+      status: 200,
+      code: 0,
+      message: "success",
+      data: { rows, count },
+    };
   } catch (error) {
     return { status: 500, code: -1, message: error.message, data: "" };
   }

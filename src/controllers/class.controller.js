@@ -9,7 +9,6 @@ const getAllClass = async (req, res) => {
         req.query.limit,
         req.query.page
       );
-      console.log(classes);
       res.status(200).json(classes);
     }
   } catch (error) {
@@ -32,4 +31,26 @@ const updateClass = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-module.exports = { getAllClass, createClass, updateClass };
+const hiddenClass = async (req, res) => {
+  try {
+    const classes = await classService.hiddenClass(req.body);
+    res.status(200).json(classes);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+const getStudentByClassId = async (req, res) => {
+  try {
+    const classes = await classService.getStudentByClassId(req.query.id);
+    res.status(200).json(classes);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+module.exports = {
+  getAllClass,
+  createClass,
+  updateClass,
+  hiddenClass,
+  getStudentByClassId,
+};

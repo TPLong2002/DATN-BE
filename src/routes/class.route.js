@@ -5,5 +5,7 @@ const router = express.Router();
 router.get("/", classController.getAllClass);
 router.post("/", classController.createClass);
 router.put("/", classController.updateClass);
+router.put("/hidden", classController.hiddenClass);
+router.get("/students", classController.getStudentByClassId);
 
 export default router;

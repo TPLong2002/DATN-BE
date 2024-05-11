@@ -77,6 +77,7 @@ const updateClass = async (data) => {
   }
 };
 const hiddenClass = async (data) => {
+  console.log(data);
   try {
     const res = await db.Classes.update(
       {
@@ -93,11 +94,36 @@ const hiddenClass = async (data) => {
     return { status: 500, code: -1, message: error.message, data: "" };
   }
 };
-
+const getStudentByClassId = async (classId) => {
+  try {
+    const res = await db.Classes.findOne({
+      include: [
+        {
+          model: db.Users,
+          as: "Class_Students",
+          through: { attributes: [] },
+          include: {
+            model: db.Profiles,
+            attributes: ["id", "firstname", "lastname"],
+          },
+        },
+      ],
+      where: { id: classId },
+    });
+    if (res) {
+      return { status: 200, code: 0, message: "success", data: res };
+    } else {
+      return { status: 500, code: 1, message: "fail", data: "" };
+    }
+  } catch (error) {
+    return { status: 500, code: 1, message: error.message, data: [] };
+  }
+};
 module.exports = {
   getAllClass,
   getClassById,
   createClass,
   updateClass,
   hiddenClass,
+  getStudentByClassId,
 };

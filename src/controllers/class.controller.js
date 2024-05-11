@@ -47,10 +47,28 @@ const getStudentByClassId = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+const kickUserFromClass = async (req, res) => {
+  try {
+    const classes = await classService.kickUserFromClass(req.body);
+    res.status(200).json(classes);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+const addStudentToClass = async (req, res) => {
+  try {
+    const classes = await classService.addStudentToClass(req.body);
+    res.status(200).json(classes);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 module.exports = {
   getAllClass,
   createClass,
   updateClass,
   hiddenClass,
   getStudentByClassId,
+  kickUserFromClass,
+  addStudentToClass,
 };

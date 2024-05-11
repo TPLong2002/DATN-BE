@@ -7,5 +7,7 @@ router.post("/", classController.createClass);
 router.put("/", classController.updateClass);
 router.put("/hidden", classController.hiddenClass);
 router.get("/students", classController.getStudentByClassId);
+router.delete("/students", classController.kickUserFromClass);
+router.post("/students", classController.addStudentToClass);
 
 export default router;

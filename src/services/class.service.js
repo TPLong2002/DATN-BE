@@ -119,6 +119,32 @@ const getStudentByClassId = async (classId) => {
     return { status: 500, code: 1, message: error.message, data: [] };
   }
 };
+const kickUserFromClass = async (data) => {
+  try {
+    const res = await db.Class_User.destroy({
+      where: { class_id: data.class_id, user_id: data.user_id },
+    });
+    if (res) {
+      return { status: 200, code: 0, message: "success", data: res };
+    } else {
+      return { status: 500, code: 1, message: "fail", data: "" };
+    }
+  } catch (error) {
+    return { status: 500, code: -1, message: error.message, data: "" };
+  }
+};
+const addStudentToClass = async (data) => {
+  try {
+    const res = await db.Class_User.bulkCreate(data);
+    if (res) {
+      return { status: 200, code: 0, message: "success", data: res };
+    } else {
+      return { status: 500, code: 1, message: "fail", data: "" };
+    }
+  } catch (error) {
+    return { status: 500, code: -1, message: error.message, data: "" };
+  }
+};
 module.exports = {
   getAllClass,
   getClassById,
@@ -126,4 +152,6 @@ module.exports = {
   updateClass,
   hiddenClass,
   getStudentByClassId,
+  kickUserFromClass,
+  addStudentToClass,
 };

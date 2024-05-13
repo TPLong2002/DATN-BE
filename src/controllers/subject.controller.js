@@ -39,9 +39,9 @@ const createSubject = async (req, res) => {
       .send({ status: 500, code: -1, message: error.message, data: "" });
   }
 };
-const deleteSubject = async (req, res) => {
+const hiddenSubject = async (req, res) => {
   try {
-    const response = await subjectService.deleteSubject(req.body);
+    const response = await subjectService.hiddenSubject(req.body);
     res.status(response.status).send(response);
   } catch (error) {
     res
@@ -53,6 +53,6 @@ module.exports = {
   getAllSubjects,
   updateSubject,
   createSubject,
-  deleteSubject,
+  hiddenSubject,
   getSubjects,
 };

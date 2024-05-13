@@ -145,6 +145,43 @@ const addStudentToClass = async (data) => {
     return { status: 500, code: -1, message: error.message, data: "" };
   }
 };
+const getSubjectsByClassId = async (classId) => {
+  console.log(classId);
+  try {
+    const res = await db.Classes.findOne({
+      include: [
+        {
+          as: "Class_Subjects",
+          model: db.Subjects,
+          through: { attributes: [] },
+          include: {
+            model: db.Users,
+            as: "Subject_Users",
+            through: { attributes: [] },
+            include: {
+              model: db.Profiles,
+              attributes: ["id", "firstname", "lastname"],
+            },
+          },
+        },
+      ],
+      where: { id: classId },
+    });
+
+    if (res) {
+      return {
+        status: 200,
+        code: 0,
+        message: "success",
+        data: res.Class_Subjects,
+      };
+    } else {
+      return { status: 500, code: 1, message: "fail", data: "" };
+    }
+  } catch (error) {
+    return { status: 500, code: -1, message: error.message, data: "" };
+  }
+};
 module.exports = {
   getAllClass,
   getClassById,
@@ -154,4 +191,5 @@ module.exports = {
   getStudentByClassId,
   kickUserFromClass,
   addStudentToClass,
+  getSubjectsByClassId,
 };

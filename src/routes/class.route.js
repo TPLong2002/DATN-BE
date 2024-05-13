@@ -9,5 +9,6 @@ router.put("/hidden", classController.hiddenClass);
 router.get("/students", classController.getStudentByClassId);
 router.delete("/students", classController.kickUserFromClass);
 router.post("/students", classController.addStudentToClass);
+router.get("/subjects", classController.getSubjectsByClassId);
 
 export default router;

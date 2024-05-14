@@ -105,13 +105,14 @@ const getUsersLock = async () => {
   }
 };
 const createUser = async (data) => {
+  data = data.map((item) => ({
+    username: item.username,
+    email: item.email,
+    group_id: item.group_id,
+    password: hashPassword(item.password),
+  }));
   try {
-    const res = await db.Users.create({
-      username: data.username,
-      email: data.email,
-      group_id: data.group_id,
-      password: hashPassword(data.password),
-    });
+    const res = await db.Users.bulkCreate(data);
     if (res) {
       return { status: 200, code: 0, message: "success", data: "" };
     } else {

@@ -21,12 +21,14 @@ const getProfileByUserId = async (userId) => {
       raw: true,
       nest: true,
     });
+    console.log(created);
+    console.log(profile);
     if (created) {
       return {
         status: 200,
         code: 0,
         message: "created success",
-        data: profile,
+        data: [profile],
       };
     } else {
       if (profile) {

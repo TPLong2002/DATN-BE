@@ -8,5 +8,7 @@ router.post("/regsubject", teacherController.registerSubject);
 router.delete("/deletesubject", teacherController.delSubjectOfTeacher);
 router.get("/teachers", teacherController.getTeachers);
 router.get("/teacherswithoutgvcn", teacherController.getTeacherWithoutGVCN);
+router.get("/teachersnotinsubject", teacherController.getTeachersNotInSubject);
+router.post("/addteachertosubject", teacherController.addTeacherToSubject);
 
 export default router;

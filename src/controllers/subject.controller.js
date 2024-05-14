@@ -1,8 +1,13 @@
 import subjectService from "../services/subject.service";
 const getAllSubjects = async (req, res) => {
   try {
-    const response = await subjectService.getAllSubjects();
-    res.status(response.status).send(response);
+    if (req.query.id) {
+      const response = await subjectService.getSubjectById(req.query.id);
+      res.status(response.status).send(response);
+    } else {
+      const response = await subjectService.getAllSubjects();
+      res.status(response.status).send(response);
+    }
   } catch (error) {
     res
       .status(500)
@@ -49,6 +54,7 @@ const hiddenSubject = async (req, res) => {
       .send({ status: 500, code: -1, message: error.message, data: "" });
   }
 };
+
 module.exports = {
   getAllSubjects,
   updateSubject,

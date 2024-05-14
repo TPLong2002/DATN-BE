@@ -91,15 +91,7 @@ const delSubjectOfTeacher = async (id) => {
 const getTeachers = async () => {
   try {
     const res = await db.Users.findAll({
-      where: {
-        "$Group.name$": "teacher", // Lọc ra các giáo viên có vai trò là 'teacher'
-      },
-      include: [
-        {
-          model: db.Groups,
-          as: "Group",
-        },
-      ],
+      include: [{ model: db.Groups, as: "Group", where: { name: "teacher" } }],
     });
 
     if (res) {
@@ -138,6 +130,52 @@ const getTeacherWithoutGVCN = async () => {
     return { status: 500, code: -1, message: error.message, data: "" };
   }
 };
+const getTeachersNotInSubject = async (subject_id) => {
+  try {
+    const res = await db.Users.findAll({
+      where: {
+        id: {
+          [Op.notIn]: db.sequelize.literal(
+            `(SELECT teacher_id FROM User_Subject WHERE subject_id = ${subject_id})`
+          ),
+        },
+      },
+      include: [
+        {
+          model: db.Groups,
+          as: "Group",
+          where: { name: "teacher" },
+        },
+        {
+          model: db.Subjects,
+          as: "UserSubjects",
+        },
+        {
+          model: db.Profiles,
+        },
+      ],
+    });
+    if (res) {
+      return { status: 200, code: 0, message: "success", data: res };
+    } else {
+      return { status: 500, code: 1, message: "fail", data: "" };
+    }
+  } catch (error) {
+    return { status: 500, code: -1, message: error.message, data: "" };
+  }
+};
+const addTeacherToSubject = async (data) => {
+  try {
+    const res = await db.User_Subject.bulkCreate(data);
+    if (res) {
+      return { status: 200, code: 0, message: "success", data: res };
+    } else {
+      return { status: 500, code: 1, message: "fail", data: "" };
+    }
+  } catch (error) {
+    return { status: 500, code: 1, message: "fail", data: "" };
+  }
+};
 module.exports = {
   getClassSubjectByTeacherId,
   registerSubject,
@@ -145,4 +183,6 @@ module.exports = {
   delSubjectOfTeacher,
   getTeachers,
   getTeacherWithoutGVCN,
+  getTeachersNotInSubject,
+  addTeacherToSubject,
 };

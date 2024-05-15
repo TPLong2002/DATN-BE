@@ -1,14 +1,25 @@
 import db from "../models";
-const getAllFee = async () => {
+const getAllFee = async (limit, page) => {
+  if (!page) page = 1;
+  if (!limit) limit = 10;
+  const offset = (page - 1) * limit;
   try {
-    const res = await db.Fees.findAll({});
-    if (res) {
-      return { status: 200, code: 0, message: "success", data: res };
+    const { count, rows } = await db.Fees.findAndCountAll({
+      offset: +offset,
+      limit: +limit,
+    });
+    if (rows && count) {
+      return {
+        status: 200,
+        code: 0,
+        message: "success",
+        data: { rows, count },
+      };
     } else {
-      return { status: 500, code: 1, message: "fail", data: "" };
+      return { status: 500, code: 1, message: "fail", data: {} };
     }
   } catch (error) {
-    return { status: 500, code: -1, message: error.message, data: "" };
+    return { status: 500, code: -1, message: error.message, data: {} };
   }
 };
 const getFeeById = async (id) => {

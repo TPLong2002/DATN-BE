@@ -11,7 +11,6 @@ const getProfileByUserId = async (req, res) => {
     return res.status(500).json({ error: err.message });
   }
 };
-module.exports = { getProfileByUserId };
 const updateProfileByUserId = async (req, res) => {
   try {
     var response = await profileService.updateProfileByUserId(req.body);

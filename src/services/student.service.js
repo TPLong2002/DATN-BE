@@ -60,4 +60,8 @@ const getStudentBySchoolyear = async (schoolyear) => {
     return { status: 500, code: 1, message: error.message, data: [] };
   }
 };
-module.exports = { getAllAssignmentsByStudentId, getStudentBySchoolyear };
+
+module.exports = {
+  getAllAssignmentsByStudentId,
+  getStudentBySchoolyear,
+};

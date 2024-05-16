@@ -146,14 +146,13 @@ const addStudentToClass = async (data) => {
   }
 };
 const getSubjectsByClassId = async (classId) => {
-  console.log(classId);
   try {
     const res = await db.Classes.findOne({
       include: [
         {
           as: "Class_Subjects",
           model: db.Subjects,
-          through: { attributes: [] },
+          through: { attributes: [], where: { ishidden: 0 } },
           include: {
             model: db.Users,
             as: "Subject_Users",
@@ -173,8 +172,26 @@ const getSubjectsByClassId = async (classId) => {
         status: 200,
         code: 0,
         message: "success",
-        data: res.Class_Subjects,
+        data: res,
       };
+    } else {
+      return { status: 500, code: 1, message: "fail", data: "" };
+    }
+  } catch (error) {
+    return { status: 500, code: -1, message: error.message, data: "" };
+  }
+};
+const deleteSubjectFromClass = async (data) => {
+  try {
+    console.log(data);
+    const res = await db.Class_Subject_User.update(
+      { ishidden: 1 },
+      {
+        where: { class_id: data.class_id, subject_id: data.subject_id },
+      }
+    );
+    if (res) {
+      return { status: 200, code: 0, message: "success", data: res };
     } else {
       return { status: 500, code: 1, message: "fail", data: "" };
     }
@@ -192,4 +209,5 @@ module.exports = {
   kickUserFromClass,
   addStudentToClass,
   getSubjectsByClassId,
+  deleteSubjectFromClass,
 };

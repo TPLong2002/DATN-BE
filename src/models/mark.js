@@ -22,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
       mark: DataTypes.FLOAT,
       ishidden: DataTypes.INTEGER,
       transcript_id: DataTypes.INTEGER,
+      schoolyear_id: DataTypes.STRING,
     },
     {
       sequelize,

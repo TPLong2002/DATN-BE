@@ -6,7 +6,6 @@ const getAllClass = async (limit, page) => {
   const offset = (page - 1) * limit;
   try {
     const { count, rows } = await db.Classes.findAndCountAll({
-      where: { ishidden: 0 },
       include: {
         model: db.Users,
         as: "GVCN",
@@ -28,16 +27,30 @@ const getAllClass = async (limit, page) => {
     return { status: 500, code: -1, message: error.message, data: "" };
   }
 };
-const getClassById = async (id) => {
+const getClasses = async () => {
   try {
-    console.log(id);
+    const res = await db.Classes.findAll({
+      where: { ishidden: 0 },
+    });
+    if (res) {
+      return { status: 200, code: 0, message: "success", data: res };
+    } else {
+      return { status: 500, code: 1, message: "fail", data: "" };
+    }
+  } catch (error) {
+    return { status: 500, code: -1, message: error.message, data: "" };
+  }
+};
+const getClassById = async (id) => {
+  console.log(id);
+  try {
     const res = await db.Classes.findAll({
       where: { id: id },
       include: [
         { model: db.Users, as: "GVCN", attributes: ["username"] },
         {
           model: db.Users,
-          as: "Class_Student",
+          as: "Class_Students",
           attributes: ["username"],
           through: { attributes: [] },
         },
@@ -210,4 +223,5 @@ module.exports = {
   addStudentToClass,
   getSubjectsByClassId,
   deleteSubjectFromClass,
+  getClasses,
 };

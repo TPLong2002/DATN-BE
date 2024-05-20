@@ -19,7 +19,7 @@ module.exports = {
         defaultValue: 0,
         type: Sequelize.INTEGER,
       },
-      schoolyear: {
+      schoolyear_id: {
         type: Sequelize.STRING,
       },
       createdAt: {

@@ -47,4 +47,42 @@ const deleteMark = async (req, res) => {
     return res.status(500).json({ code: -1, error: error.message, data: null });
   }
 };
-module.exports = { getMarksByStudentId, createMark, updateMark, deleteMark };
+const getMatksOfStudentsInClass = async (req, res) => {
+  try {
+    const response = await markService.getMatksOfStudentsInClass(
+      req.query.class_id,
+      req.query.subject_id
+    );
+    return res.status(response.status).json({
+      code: response.code,
+      message: response.message,
+      data: response.data,
+    });
+  } catch (error) {
+    return res.status(500).json({ code: -1, error: error.message, data: null });
+  }
+};
+const getMatksOfStudentInClassById = async (req, res) => {
+  try {
+    const response = await markService.getMatksOfStudentInClassById(
+      req.query.class_id,
+      req.query.subject_id,
+      req.query.user_id
+    );
+    return res.status(response.status).json({
+      code: response.code,
+      message: response.message,
+      data: response.data,
+    });
+  } catch (error) {
+    return res.status(500).json({ code: -1, error: error.message, data: null });
+  }
+};
+module.exports = {
+  getMarksByStudentId,
+  createMark,
+  updateMark,
+  deleteMark,
+  getMatksOfStudentsInClass,
+  getMatksOfStudentInClassById,
+};

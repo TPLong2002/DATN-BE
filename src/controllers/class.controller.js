@@ -5,11 +5,16 @@ const getAllClass = async (req, res) => {
       const classes = await classService.getClassById(req.query.id);
       res.status(200).json(classes);
     } else {
-      const classes = await classService.getAllClass(
-        req.query.limit,
-        req.query.page
-      );
-      res.status(200).json(classes);
+      if (req.query.limit && req.query.page) {
+        const classes = await classService.getAllClass(
+          req.query.limit,
+          req.query.page
+        );
+        res.status(200).json(classes);
+      } else {
+        const classes = await classService.getClasses();
+        res.status(200).json(classes);
+      }
     }
   } catch (error) {
     res.status(500).json({ message: error.message });

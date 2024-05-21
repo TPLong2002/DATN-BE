@@ -8,5 +8,6 @@ router.put("/", markController.updateMark);
 router.delete("/", markController.deleteMark);
 router.get("/subjectclass", markController.getMatksOfStudentsInClass);
 router.get("/studentsubjectclass", markController.getMatksOfStudentInClassById);
+router.post("/updateOrCreate", markController.updateOrCreateMarksOfStudent);
 
 export default router;

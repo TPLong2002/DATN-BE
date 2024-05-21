@@ -8,5 +8,14 @@ router.put("/", assignmentController.updateAssignment);
 router.get("/assignments", assignmentController.getAllAssignments);
 router.get("/byuser", assignmentController.getAssignmentByUserId);
 router.get("/class", assignmentController.getAssignmentClass);
+router.get("/assignmentsinclass", assignmentController.getAssignmentByClassId);
+router.get(
+  "/assignmentsofsubjectinclass",
+  assignmentController.getAssignmentOfSubjectByClassId
+);
+router.get(
+  "/classesnotinassignment",
+  assignmentController.getClassesNotInAssignmentOfTeacher
+);
 
 export default router;

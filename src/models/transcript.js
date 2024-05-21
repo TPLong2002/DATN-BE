@@ -17,6 +17,9 @@ module.exports = (sequelize, DataTypes) => {
       });
       Transcripts.belongsTo(models.Semesters, { foreignKey: "semester_id" });
       Transcripts.hasMany(models.Marks, { foreignKey: "transcript_id" });
+      Transcripts.belongsTo(models.Schoolyears, {
+        foreignKey: "schoolyear_id",
+      });
     }
   }
   Transcripts.init(
@@ -27,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
       rankedacademic_id: DataTypes.INTEGER,
       conduct_id: DataTypes.INTEGER,
       semester_id: DataTypes.INTEGER,
-      schoolyear: DataTypes.STRING,
+      schoolyear_id: DataTypes.INTEGER,
     },
     {
       sequelize,

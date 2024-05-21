@@ -149,6 +149,30 @@ const getMatksOfStudentInClassById = async (class_id, subject_id, user_id) => {
     return { status: 500, message: error.message, code: -1, data: null };
   }
 };
+const updateOrCreateMarksOfStudent = async (data) => {
+  try {
+    for (const item of data) {
+      const existingMark = await db.Marks.findOne({
+        where: {
+          user_id: item.user_id,
+          subject_id: item.subject_id,
+          marktype_id: item.marktype_id,
+        },
+      });
+
+      if (existingMark) {
+        if (existingMark.mark !== +item.mark) {
+          await existingMark.update({ mark: +item.mark });
+        }
+      } else {
+        await db.Marks.create(item);
+      }
+    }
+    return { status: 200, message: "success", code: 0, data: "" };
+  } catch (error) {
+    return { status: 500, message: error.message, code: -1, data: null };
+  }
+};
 module.exports = {
   getMarksByStudentId,
   createMark,
@@ -156,4 +180,5 @@ module.exports = {
   deleteMark,
   getMatksOfStudentsInClass,
   getMatksOfStudentInClassById,
+  updateOrCreateMarksOfStudent,
 };

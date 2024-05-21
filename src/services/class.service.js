@@ -42,7 +42,6 @@ const getClasses = async () => {
   }
 };
 const getClassById = async (id) => {
-  console.log(id);
   try {
     const res = await db.Classes.findAll({
       where: { id: id },
@@ -120,6 +119,7 @@ const getStudentByClassId = async (classId) => {
             attributes: ["id", "firstname", "lastname"],
           },
         },
+        { model: db.Schoolyears, attributes: ["name"] },
       ],
       where: { id: classId },
     });

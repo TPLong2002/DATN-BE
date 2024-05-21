@@ -20,7 +20,7 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       schoolyear_id: {
-        type: Sequelize.STRING,
+        type: Sequelize.INTEGER,
       },
       createdAt: {
         allowNull: false,

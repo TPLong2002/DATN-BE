@@ -29,6 +29,7 @@ module.exports = (sequelize, DataTypes) => {
         through: "Class_Subject_User",
         foreignKey: "class_id",
       });
+      Classes.belongsTo(models.Schoolyears, { foreignKey: "schoolyear_id" });
     }
   }
   Classes.init(
@@ -36,7 +37,7 @@ module.exports = (sequelize, DataTypes) => {
       name: DataTypes.STRING,
       gvcn_id: DataTypes.INTEGER,
       ishidden: DataTypes.INTEGER,
-      schoolyear_id: DataTypes.STRING,
+      schoolyear_id: DataTypes.INTEGER,
     },
     {
       sequelize,

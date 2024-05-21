@@ -9,7 +9,13 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       Schoolyears.hasMany(models.Transcripts, {
-        foreignKey: "semester_id",
+        foreignKey: "schoolyear_id",
+      });
+      Schoolyears.hasMany(models.Classes, {
+        foreignKey: "schoolyear_id",
+      });
+      Schoolyears.hasMany(models.Marks, {
+        foreignKey: "schoolyear_id",
       });
     }
   }

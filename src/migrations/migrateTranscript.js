@@ -28,8 +28,8 @@ module.exports = {
       semester_id: {
         type: Sequelize.INTEGER,
       },
-      schoolyear: {
-        type: Sequelize.STRING,
+      schoolyear_id: {
+        type: Sequelize.INTEGER,
       },
       createdAt: {
         allowNull: false,

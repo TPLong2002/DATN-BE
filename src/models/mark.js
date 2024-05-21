@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
       Marks.belongsTo(models.Marktypes, { foreignKey: "marktype_id" });
       Marks.belongsTo(models.Subjects, { foreignKey: "subject_id" });
       Marks.belongsTo(models.Transcripts, { foreignKey: "transcript_id" });
+      Marks.belongsTo(models.Schoolyears, { foreignKey: "schoolyear_id" });
     }
   }
   Marks.init(
@@ -22,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
       mark: DataTypes.FLOAT,
       ishidden: DataTypes.INTEGER,
       transcript_id: DataTypes.INTEGER,
-      schoolyear_id: DataTypes.STRING,
+      schoolyear_id: DataTypes.INTEGER,
     },
     {
       sequelize,

@@ -21,8 +21,7 @@ const getProfileByUserId = async (userId) => {
       raw: true,
       nest: true,
     });
-    console.log(created);
-    console.log(profile);
+
     if (created) {
       return {
         status: 200,

@@ -18,10 +18,23 @@ import assignment_classRoutes from "./assignment_class.route";
 import transcriptsRoutes from "./transcript.route";
 import markRoutes from "./mark.route";
 import groupRoutes from "./group.route";
+import schoolyearRoutes from "./schoolyear.route";
+import gradeRoutes from "./grade.route";
+import { checkUserJWT, checkUserPermission } from "../middleware/JWTmdw";
+import authController from "../controllers/auth.controller";
+import roleRoutes from "./role.route";
+import grouproleRoutes from "./group_role.route";
 
 const router = Router();
 const initApiRoutes = (app) => {
+  router.all("*", checkUserJWT, checkUserPermission);
   router.get("/ping", (req, res) => res.sendStatus(200));
+  router.get("/test", authController.test);
+  router.post("/register", authController.register);
+  router.post("/login", authController.Login);
+  router.get("/logout", authController.logout);
+  router.post("/changePassword", authController.changePassword);
+  router.get("/account", authController.getUserAccount);
   router.use("/user", userRoutes);
   router.use("/profile", profileRoutes);
   router.use("/class", classRoutes);
@@ -40,7 +53,12 @@ const initApiRoutes = (app) => {
   router.use("/assignment_class", assignment_classRoutes);
   router.use("/transcript", transcriptsRoutes);
   router.use("/mark", markRoutes);
+  router.use("/schoolyear", schoolyearRoutes);
   router.use("/group", groupRoutes);
+  router.use("/grade", gradeRoutes);
+  router.use("/role", roleRoutes);
+  router.use("/grouprole", grouproleRoutes);
+
   app.use("/api/v1/", router);
 };
 export default initApiRoutes;

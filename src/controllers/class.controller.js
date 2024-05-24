@@ -8,7 +8,9 @@ const getAllClass = async (req, res) => {
       if (req.query.limit && req.query.page) {
         const classes = await classService.getAllClass(
           req.query.limit,
-          req.query.page
+          req.query.page,
+          req.query.grade_id,
+          req.query.schoolyear_id
         );
         res.status(200).json(classes);
       } else {

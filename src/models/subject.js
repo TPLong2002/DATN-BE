@@ -25,6 +25,7 @@ module.exports = (sequelize, DataTypes) => {
         through: "User_Subject",
         foreignKey: "subject_id",
       });
+      Subjects.belongsTo(models.Grades, { foreignKey: "grade_id" });
     }
   }
   Subjects.init(

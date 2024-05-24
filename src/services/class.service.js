@@ -1,11 +1,14 @@
 import db from "../models";
 
-const getAllClass = async (limit, page) => {
+const getAllClass = async (limit, page, grade_id, schoolyear_id) => {
   if (!limit) limit = 10;
   if (!page) page = 1;
   const offset = (page - 1) * limit;
   try {
+    const condition1 = grade_id ? { grade_id: grade_id } : {};
+    const condition2 = schoolyear_id ? { schoolyear_id: schoolyear_id } : {};
     const { count, rows } = await db.Classes.findAndCountAll({
+      where: { ...condition1, ...condition2 },
       include: {
         model: db.Users,
         as: "GVCN",
@@ -66,7 +69,7 @@ const getClassById = async (id) => {
 };
 const createClass = async (data) => {
   try {
-    const res = await db.Classes.create(data);
+    const res = await db.Classes.bulkCreate(data);
     if (res) {
       return { status: 200, code: 0, message: "success", data: res };
     } else {

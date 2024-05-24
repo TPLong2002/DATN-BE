@@ -1,5 +1,5 @@
 import db from "../models";
-import { Op } from "sequelize";
+import { Op, where } from "sequelize";
 
 const getAssignments = async (limit, page) => {
   if (!limit) limit = 10;
@@ -200,8 +200,28 @@ const getClassesNotInAssignmentOfTeacher = async (
               `(SELECT class_id FROM Assignment_Class WHERE assignment_id = ${assignment_id})`
             ),
           ],
+          [Op.in]: [
+            db.Sequelize.literal(
+              `(SELECT class_id FROM Class_Subject_User WHERE subject_id = ${subject_id} AND teacher_id = ${teacher_id})`
+            ),
+          ],
         },
       },
+    });
+    if (res) {
+      return { status: 200, code: 0, message: "success", data: res };
+    } else {
+      return { status: 500, code: 1, message: "fail", data: "" };
+    }
+  } catch (error) {
+    return { status: 500, code: -1, message: error.message, data: "" };
+  }
+};
+const changeClass = async (data) => {
+  try {
+    console.log(data);
+    const res = await db.Assignment_Class.update(data, {
+      where: { assignment_id: data.assignment_id },
     });
     if (res) {
       return { status: 200, code: 0, message: "success", data: res };
@@ -222,4 +242,5 @@ module.exports = {
   getAssignmentByClassId,
   getAssignmentOfSubjectByClassId,
   getClassesNotInAssignmentOfTeacher,
+  changeClass,
 };

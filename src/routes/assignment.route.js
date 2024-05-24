@@ -17,5 +17,6 @@ router.get(
   "/classesnotinassignment",
   assignmentController.getClassesNotInAssignmentOfTeacher
 );
+router.put("/changeClass", assignmentController.changeClass);
 
 export default router;

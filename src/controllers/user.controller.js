@@ -13,12 +13,32 @@ const getAllUsers = async (req, res) => {
 };
 const getUsers = async (req, res) => {
   try {
-    var response = await userServices.getUsers(req.query.limit, req.query.page);
-    return res.status(response.status).json({
-      code: response.code,
-      message: response.message,
-      data: response.data,
-    });
+    if (req.query.group_id) {
+      var response = await userServices.getUsersByGroupId(
+        req.query.limit,
+        req.query.page,
+        req.query.group_id,
+        req.query.isdeleted,
+        req.query.search
+      );
+      return res.status(response.status).json({
+        code: response.code,
+        message: response.message,
+        data: response.data,
+      });
+    } else {
+      var response = await userServices.getUsers(
+        req.query.limit,
+        req.query.page,
+        req.query.isdeleted,
+        req.query.search
+      );
+      return res.status(response.status).json({
+        code: response.code,
+        message: response.message,
+        data: response.data,
+      });
+    }
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }

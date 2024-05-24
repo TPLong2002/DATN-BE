@@ -1,5 +1,6 @@
 import db from "../models/index.js";
 import bcrypt from "bcryptjs";
+import { Op } from "sequelize";
 
 const salt = bcrypt.genSaltSync(10);
 
@@ -11,15 +12,6 @@ const hashPassword = (password) => {
 const getAllUsers = async () => {
   try {
     const users = await db.Users.findAll({
-      // include: {
-      //   model: db.Classes,
-      //   as: "Student_Class",
-      //   where: { id: 1 },
-      //   attributes: [],
-      //   through: {
-      //     attributes: [],
-      //   },
-      // },
       raw: true,
       nest: true,
     });
@@ -35,14 +27,36 @@ const getAllUsers = async () => {
     };
   }
 };
-const getUsers = async (limit, page) => {
+const getUsers = async (limit, page, isdeleted, search) => {
   if (!limit) limit = 10;
   if (!page) page = 1;
+
   const offset = (page - 1) * limit;
+
   try {
+    const searchCondition = search
+      ? {
+          [Op.or]: [
+            {
+              username: {
+                [Op.like]: `%${search}%`,
+              },
+            },
+            {
+              email: {
+                [Op.like]: `%${search}%`,
+              },
+            },
+          ],
+        }
+      : {};
+
     const { count, rows } = await db.Users.findAndCountAll({
-      where: { isdeleted: 0 },
-      attributes: ["id", "username", "email", "group_id"],
+      where: {
+        isdeleted: isdeleted,
+        ...searchCondition,
+      },
+      attributes: ["id", "username", "email", "group_id", "isdeleted"],
       limit: +limit,
       offset: +offset,
       raw: true,
@@ -140,7 +154,7 @@ const delUser = async (data) => {
   try {
     const res = await db.Users.update(
       {
-        isdeleted: 1,
+        isdeleted: data.ishidden,
       },
       {
         where: { id: data.id },
@@ -212,6 +226,87 @@ const unlockUser = async (data) => {
     return { status: 500, code: -1, message: error.message, data: "" };
   }
 };
+const getUsersByGroupId = async (limit, page, group_id, isdeleted, search) => {
+  console.log(page, limit, group_id);
+  if (!limit) limit = 10;
+  if (!page) page = 1;
+
+  const offset = (page - 1) * limit;
+  try {
+    const searchCondition = search
+      ? {
+          [Op.or]: [
+            {
+              username: {
+                [Op.like]: `%${search}%`,
+              },
+            },
+            {
+              email: {
+                [Op.like]: `%${search}%`,
+              },
+            },
+          ],
+        }
+      : {};
+
+    const { count, rows } = await db.Users.findAndCountAll({
+      where: { group_id: group_id, isdeleted: isdeleted, ...searchCondition },
+      limit: +limit,
+      offset: +offset,
+      raw: true,
+      nest: true,
+    });
+    return { status: 200, code: 0, message: "success", data: { count, rows } };
+  } catch (err) {
+    console.log(err);
+    return {
+      status: 500,
+      status: 500,
+      code: -1,
+      message: "errService",
+      data: [],
+    };
+  }
+};
+const getUsersBySearch = async (limit, page, search) => {
+  if (!limit) limit = 10;
+  if (!page) page = 1;
+
+  const offset = (page - 1) * limit;
+  try {
+    const { count, rows } = await db.Users.findAndCountAll({
+      where: {
+        [Op.or]: [
+          {
+            username: {
+              [Op.like]: `%${search}%`,
+            },
+          },
+          {
+            email: {
+              [Op.like]: `%${search}%`,
+            },
+          },
+        ],
+      },
+      limit: +limit,
+      offset: +offset,
+      raw: true,
+      nest: true,
+    });
+    return { status: 200, code: 0, message: "success", data: { count, rows } };
+  } catch (err) {
+    console.log(err);
+    return {
+      status: 500,
+      status: 500,
+      code: -1,
+      message: "errService",
+      data: [],
+    };
+  }
+};
 module.exports = {
   getAllUsers,
   createUser,
@@ -223,4 +318,5 @@ module.exports = {
   getUsersLock,
   lockUser,
   unlockUser,
+  getUsersByGroupId,
 };

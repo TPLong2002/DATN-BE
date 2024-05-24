@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       Marks.belongsTo(models.Subjects, { foreignKey: "subject_id" });
       Marks.belongsTo(models.Transcripts, { foreignKey: "transcript_id" });
       Marks.belongsTo(models.Schoolyears, { foreignKey: "schoolyear_id" });
+      Marks.belongsTo(models.Semesters, { foreignKey: "semester_id" });
     }
   }
   Marks.init(

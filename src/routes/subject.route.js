@@ -7,5 +7,6 @@ router.get("/subjects", subjectController.getSubjects);
 router.post("/", subjectController.createSubject);
 router.put("/", subjectController.updateSubject);
 router.put("/hidden", subjectController.hiddenSubject);
+router.get("/grade", subjectController.getSubjectByGradeId);
 
 export default router;

@@ -29,9 +29,9 @@ const Login = async (req, res) => {
     }
     let data = await authService.login(req.body);
     if (data?.data?.access_token) {
-      res.cookie("token", data.data.access_token, {
-        httpOnly: true,
-      });
+      // res.cookie("token", data.data.access_token, {
+      //   httpOnly: true,
+      // });
       return res
         .status(data.status)
         .json({ message: data.message, code: data.code, data: data.data });
@@ -41,8 +41,11 @@ const Login = async (req, res) => {
   }
 };
 const logout = (req, res) => {
-  res.clearCookie("token");
-  return res.status(200).json({ message: "logout success", code: 0 });
+  // console.log("logout");
+  // res.clearCookie("token");
+  return res
+    .status(200)
+    .json({ message: "logout success", code: 0, data: { isAuth: false } });
 };
 const changePassword = async (req, res) => {
   try {

@@ -41,6 +41,8 @@ const checkUserJWT = (req, res, next) => {
   if (nonSecurePaths.includes(req.path)) {
     return next();
   }
+  console.log(req.path);
+  console.log(req.headers["authorization"]);
   const token =
     req.cookies.token ||
     req.headers["x-access-token"] ||
@@ -49,6 +51,7 @@ const checkUserJWT = (req, res, next) => {
     req.query.token ||
     req.body.token ||
     req.params.token;
+
   if (!token) {
     console.log("No token provided!", req.path);
     return res.status(200).json({
@@ -57,6 +60,7 @@ const checkUserJWT = (req, res, next) => {
       data: { isAuth: false },
     });
   }
+
   const decoded = verifyToken(token);
   if (decoded) {
     req.user = decoded;

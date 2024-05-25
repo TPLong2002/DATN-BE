@@ -33,6 +33,9 @@ const login = async (data) => {
       where: {
         username: data.username,
       },
+      include: [{ model: db.Profiles }],
+      raw: true,
+      nest: true,
     });
 
     if (user) {
@@ -42,6 +45,7 @@ const login = async (data) => {
           username: user.username,
           group_id: user.group_id,
           id: user.id,
+          name: user.Profile.firstName + " " + user.Profile.lastName,
         };
         const token = await JWTmdw.createToken(payload);
         return {
@@ -53,6 +57,8 @@ const login = async (data) => {
             username: user.username,
             id: user.id,
             access_token: token,
+            group_id: user.group_id,
+            name: user.Profile.firstName + " " + user.Profile.lastName,
           },
         };
       }

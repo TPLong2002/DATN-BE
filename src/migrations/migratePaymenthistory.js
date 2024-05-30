@@ -12,11 +12,37 @@ module.exports = {
       fee_id: {
         type: Sequelize.INTEGER,
       },
-      user_id: {
+      student_id: {
         type: Sequelize.INTEGER,
+      },
+      parent_id: {
+        type: Sequelize.INTEGER,
+      },
+      paymentstatus_id: {
+        type: Sequelize.INTEGER,
+        defaultValue: 2,
+      },
+      amount: {
+        type: Sequelize.INTEGER,
+      },
+      time: {
+        type: Sequelize.DATE,
+      },
+      orderInfo: {
+        type: Sequelize.STRING,
+      },
+      orderType: {
+        type: Sequelize.STRING,
+      },
+      payType: {
+        type: Sequelize.STRING,
       },
       paymentmethod_id: {
         type: Sequelize.INTEGER,
+      },
+      ishidden: {
+        type: Sequelize.INTEGER,
+        defaultValue: 0,
       },
       createdAt: {
         allowNull: false,

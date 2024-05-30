@@ -24,6 +24,8 @@ import { checkUserJWT, checkUserPermission } from "../middleware/JWTmdw";
 import authController from "../controllers/auth.controller";
 import roleRoutes from "./role.route";
 import grouproleRoutes from "./group_role.route";
+import paymentRoutes from "./payment.route";
+import paymenthistory from "./paymenthistory.route";
 
 const router = Router();
 const initApiRoutes = (app) => {
@@ -58,6 +60,8 @@ const initApiRoutes = (app) => {
   router.use("/grade", gradeRoutes);
   router.use("/role", roleRoutes);
   router.use("/grouprole", grouproleRoutes);
+  router.use("/payment", paymentRoutes);
+  router.use("/paymenthistory", paymenthistory);
 
   app.use("/api/v1/", router);
 };

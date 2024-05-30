@@ -16,19 +16,21 @@ const createToken = (data) => {
     token = jwt.sign(data, process.env.JWT_SECRET, {
       expiresIn: process.env.JWT_EXPIRES_IN,
     });
+    console.log("token", token);
   } catch (error) {
     console.log(error);
   }
   return token;
 };
 const verifyToken = (token) => {
-  return jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-    if (err) {
-      console.log(err);
-      return null;
+  try {
+    return jwt.verify(token, process.env.JWT_SECRET);
+  } catch (err) {
+    if (err.name === "TokenExpiredError") {
+      return { expired: true, message: "Token has expired" };
     }
-    return decoded;
-  });
+    return { invalid: true, message: "Token is invalid" };
+  }
 };
 function extractToken(req) {
   if (req) {
@@ -41,8 +43,7 @@ const checkUserJWT = (req, res, next) => {
   if (nonSecurePaths.includes(req.path)) {
     return next();
   }
-  console.log(req.path);
-  console.log(req.headers["authorization"]);
+
   const token =
     req.cookies.token ||
     req.headers["x-access-token"] ||
@@ -62,15 +63,26 @@ const checkUserJWT = (req, res, next) => {
   }
 
   const decoded = verifyToken(token);
-  if (decoded) {
-    req.user = decoded;
-    req.token = token;
-    next();
-  } else {
-    return res
-      .status(401)
-      .send({ message: "Unauthorized!", code: 1, data: [] });
+  if (decoded.expired) {
+    return res.status(401).json({
+      message: "Token has expired!",
+      code: 2,
+      data: { isAuth: false },
+    });
   }
+
+  if (decoded.invalid) {
+    return res.status(401).json({
+      message: "Unauthorized!",
+      code: 1,
+      data: { isAuth: false },
+    });
+  }
+
+  req.user = decoded;
+  req.token = token;
+  next();
+
   // jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
   //   if (err) {
   //     return res

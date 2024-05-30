@@ -1,5 +1,5 @@
 import db from "../models";
-import { Op } from "sequelize";
+import { Op, where } from "sequelize";
 
 const getAllFee = async (limit, page) => {
   if (!page) page = 1;
@@ -71,6 +71,16 @@ const getStudentsOfFee = async (fee_id) => {
           {
             model: db.Profiles,
             attributes: ["firstname", "lastname"],
+          },
+          {
+            model: db.Paymenthistories,
+            as: "Student_Payment",
+            include: [
+              {
+                model: db.Paymentstatuses,
+                attributes: ["description"],
+              },
+            ],
           },
         ],
         through: { where: { ishidden: 0 }, attributes: [] },
@@ -148,6 +158,7 @@ const addUsersToFee = async (data) => {
     return { status: 500, code: -1, message: error.message, data: [] };
   }
 };
+
 module.exports = {
   getAllFee,
   getFeeById,

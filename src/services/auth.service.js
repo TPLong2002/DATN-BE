@@ -33,7 +33,14 @@ const login = async (data) => {
       where: {
         username: data.username,
       },
-      include: [{ model: db.Profiles }],
+      include: [
+        { model: db.Profiles },
+        {
+          model: db.Groups,
+          as: "Group",
+        },
+      ],
+
       raw: true,
       nest: true,
     });
@@ -44,6 +51,7 @@ const login = async (data) => {
           email: user.email,
           username: user.username,
           group_id: user.group_id,
+          role: user.Group.name,
           id: user.id,
           name: user.Profile.firstName + " " + user.Profile.lastName,
         };
@@ -58,6 +66,7 @@ const login = async (data) => {
             id: user.id,
             access_token: token,
             group_id: user.group_id,
+            role: user.Group.name,
             name: user.Profile.firstName + " " + user.Profile.lastName,
           },
         };

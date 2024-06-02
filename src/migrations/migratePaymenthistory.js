@@ -12,10 +12,7 @@ module.exports = {
       fee_id: {
         type: Sequelize.INTEGER,
       },
-      student_id: {
-        type: Sequelize.INTEGER,
-      },
-      parent_id: {
+      parent_student_id: {
         type: Sequelize.INTEGER,
       },
       paymentstatus_id: {

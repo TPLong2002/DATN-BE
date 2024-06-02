@@ -17,6 +17,12 @@ module.exports = (sequelize, DataTypes) => {
       Schoolyears.hasMany(models.Marks, {
         foreignKey: "schoolyear_id",
       });
+      Schoolyears.hasMany(models.Fees, {
+        foreignKey: "schoolyear_id",
+      });
+      Schoolyears.hasMany(models.News, {
+        foreignKey: "schoolyear_id",
+      });
     }
   }
   Schoolyears.init(

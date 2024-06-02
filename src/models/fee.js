@@ -16,6 +16,8 @@ module.exports = (sequelize, DataTypes) => {
       Fees.hasMany(models.Paymenthistories, {
         foreignKey: "fee_id",
       });
+      Fees.belongsTo(models.Schoolyears, { foreignKey: "schoolyear_id" });
+      Fees.belongsTo(models.Grades, { foreignKey: "grade_id" });
     }
   }
   Fees.init(
@@ -25,6 +27,8 @@ module.exports = (sequelize, DataTypes) => {
       startDate: DataTypes.DATE,
       endDate: DataTypes.DATE,
       ishidden: DataTypes.INTEGER,
+      schoolyear_id: DataTypes.INTEGER,
+      grade_id: DataTypes.INTEGER,
     },
     {
       sequelize,

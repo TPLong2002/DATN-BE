@@ -15,16 +15,20 @@ const getPaymentHistory = async (data) => {
     const amount = fee.price;
     const [history, created] = await db.Paymenthistories.findOrCreate({
       where: {
-        student_id: data.student_id,
-        parent_id: data.parent_id,
+        parent_student_id: data.parent_student_id,
         fee_id: data.fee_id,
       },
       defaults: {
-        student_id: data.student_id,
-        parent_id: data.parent_id,
+        parent_student_id: data.parent_student_id,
         fee_id: data.fee_id,
         amount: amount,
       },
+      include: [
+        {
+          model: db.Paymentstatuses,
+          attributes: ["id", "code", "description"],
+        },
+      ],
     });
 
     if (created) {

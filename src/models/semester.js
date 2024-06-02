@@ -14,6 +14,9 @@ module.exports = (sequelize, DataTypes) => {
       Semesters.hasMany(models.Marks, {
         foreignKey: "semester_id",
       });
+      Semesters.hasMany(models.News, {
+        foreignKey: "semester_id",
+      });
     }
   }
   Semesters.init(

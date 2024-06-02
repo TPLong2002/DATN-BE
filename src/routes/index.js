@@ -25,7 +25,8 @@ import authController from "../controllers/auth.controller";
 import roleRoutes from "./role.route";
 import grouproleRoutes from "./group_role.route";
 import paymentRoutes from "./payment.route";
-import paymenthistory from "./paymenthistory.route";
+import paymenthistoryRoutes from "./paymenthistory.route";
+import categoryRoutes from "./category.route";
 
 const router = Router();
 const initApiRoutes = (app) => {
@@ -61,7 +62,8 @@ const initApiRoutes = (app) => {
   router.use("/role", roleRoutes);
   router.use("/grouprole", grouproleRoutes);
   router.use("/payment", paymentRoutes);
-  router.use("/paymenthistory", paymenthistory);
+  router.use("/paymenthistory", paymenthistoryRoutes);
+  router.use("/category", categoryRoutes);
 
   app.use("/api/v1/", router);
 };

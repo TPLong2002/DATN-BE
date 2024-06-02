@@ -1,11 +1,55 @@
 import db from "../models";
-const getAllNews = async () => {
+const getNewsBySort = async (
+  limit,
+  page,
+  schoolyear_id,
+  semester_id,
+  category_id
+) => {
+  if (!limit) limit = 10;
+  if (!page) page = 1;
+  const offset = (page - 1) * limit;
   try {
-    const news = await db.News.findAll({
-      where: { ishidden: 0 },
-      include: [{ model: db.Users, as: "author", attributes: ["username"] }],
+    const condition1 = semester_id ? { semester_id: semester_id } : {};
+    const condition2 = schoolyear_id ? { schoolyear_id: schoolyear_id } : {};
+    const condition3 = category_id ? { category_id: category_id } : {};
+    const { count, rows } = await db.News.findAndCountAll({
+      where: { ...condition1, ...condition2, ...condition3 },
+      include: [
+        {
+          model: db.Users,
+          as: "author",
+          attributes: ["username"],
+          include: [
+            {
+              model: db.Profiles,
+              attributes: ["firstName", "lastName"],
+            },
+          ],
+        },
+        {
+          model: db.Categories,
+          as: "category",
+          attributes: ["description"],
+        },
+        {
+          model: db.Schoolyears,
+          as: "schoolyear",
+          attributes: ["name"],
+        },
+        {
+          model: db.Semesters,
+          as: "semester",
+          attributes: ["name"],
+        },
+      ],
+      order: [["createdAt", "DESC"]],
+      limit: +limit,
+      offset: +offset,
+      raw: true,
+      nest: true,
     });
-    return { status: 200, code: 1, message: "Success", data: news };
+    return { status: 200, code: 1, message: "Success", data: { count, rows } };
   } catch (error) {
     return { status: 500, code: -1, message: error.message, data: "" };
   }
@@ -20,7 +64,27 @@ const createNews = async (news) => {
 };
 const getNewsById = async (id) => {
   try {
-    const news = await db.News.findOne({ where: { id: id } });
+    const news = await db.News.findOne({
+      where: { id: id },
+      include: [
+        {
+          model: db.Users,
+          as: "author",
+          attributes: ["username"],
+          include: [
+            {
+              model: db.Profiles,
+              attributes: ["firstName", "lastName"],
+            },
+          ],
+        },
+        {
+          model: db.Categories,
+          as: "category",
+          attributes: ["description"],
+        },
+      ],
+    });
     return { status: 200, code: 1, message: "Success", data: news };
   } catch (error) {
     return { status: 500, code: -1, message: error.message, data: "" };
@@ -43,7 +107,7 @@ const updateNews = async (data) => {
   }
 };
 module.exports = {
-  getAllNews,
+  getNewsBySort,
   createNews,
   getNewsById,
   getNewsByUserId,

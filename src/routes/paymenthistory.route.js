@@ -2,6 +2,6 @@ import paymenthistoryController from "../controllers/paymenthistory.controller";
 import express from "express";
 const router = express.Router();
 
-router.post("/", paymenthistoryController.getPaymentHistory);
+router.post("/feeOfStudent", paymenthistoryController.getPaymentHistory);
 
 export default router;

@@ -2,9 +2,9 @@ import express from "express";
 import newsController from "../controllers/news.controller";
 const router = express.Router();
 
-router.get("/", newsController.getAllNews);
-router.post("/", newsController.createNews);
-router.put("/", newsController.updateNews);
+router.get("/getnewsbysort", newsController.getNewsBySort);
+router.post("/create", newsController.createNews);
+router.put("/update", newsController.updateNews);
 router.get("/byuser", newsController.getNewsByUserId);
 
 export default router;

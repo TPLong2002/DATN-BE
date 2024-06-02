@@ -11,11 +11,8 @@ module.exports = (sequelize, DataTypes) => {
       Paymenthistories.belongsTo(models.Fees, {
         foreignKey: "fee_id",
       });
-      Paymenthistories.belongsTo(models.Users, {
-        foreignKey: "student_id",
-      });
-      Paymenthistories.belongsTo(models.Users, {
-        foreignKey: "parent_id",
+      Paymenthistories.belongsTo(models.Parent_Student, {
+        foreignKey: "parent_student_id",
       });
       Paymenthistories.belongsTo(models.Paymentmethods, {
         foreignKey: "paymentmethod_id",
@@ -28,8 +25,7 @@ module.exports = (sequelize, DataTypes) => {
   Paymenthistories.init(
     {
       fee_id: DataTypes.INTEGER,
-      student_id: DataTypes.INTEGER,
-      parent_id: DataTypes.INTEGER,
+      parent_student_id: DataTypes.INTEGER,
       paymentstatus_id: DataTypes.INTEGER,
       amount: DataTypes.INTEGER,
       time: DataTypes.DATE,

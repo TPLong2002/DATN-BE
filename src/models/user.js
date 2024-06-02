@@ -24,14 +24,7 @@ module.exports = (sequelize, DataTypes) => {
         through: "User_Fee",
         foreignKey: "user_id",
       });
-      Users.hasMany(models.Paymenthistories, {
-        foreignKey: "student_id",
-        as: "Student_Payment",
-      });
-      Users.hasMany(models.Paymenthistories, {
-        foreignKey: "parent_id",
-        as: "Parent_Payment",
-      });
+
       Users.hasOne(models.Profiles, { foreignKey: "user_id" });
       Users.hasOne(models.Classes, { foreignKey: "gvcn_id", as: "GVCN" });
       Users.belongsToMany(models.Classes, {

@@ -1,11 +1,17 @@
 import newsService from "../services/news.service";
-const getAllNews = async (req, res) => {
+const getNewsBySort = async (req, res) => {
   try {
     if (req.query.id) {
       const response = await newsService.getNewsById(req.query.id);
       return res.status(response.status).json(response);
     } else {
-      const response = await newsService.getAllNews();
+      const response = await newsService.getNewsBySort(
+        req.query.limit,
+        req.query.page,
+        req.query.schoolyear_id,
+        req.query.semester_id,
+        req.query.category_id
+      );
       return res.status(response.status).json(response);
     }
   } catch (error) {
@@ -44,4 +50,4 @@ const updateNews = async (req, res) => {
       .json({ status: 500, code: -1, message: error.message, data: "" });
   }
 };
-module.exports = { getAllNews, createNews, getNewsByUserId, updateNews };
+module.exports = { getNewsBySort, createNews, getNewsByUserId, updateNews };

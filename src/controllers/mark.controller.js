@@ -69,7 +69,9 @@ const getMatksOfStudentInClassById = async (req, res) => {
     const response = await markService.getMatksOfStudentInClassById(
       req.query.class_id,
       req.query.subject_id,
-      req.query.user_id
+      req.query.user_id,
+      req.query.semester_id,
+      req.query.schoolyear_id
     );
     return res.status(response.status).json({
       code: response.code,

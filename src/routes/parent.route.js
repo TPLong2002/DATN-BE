@@ -4,5 +4,7 @@ const router = express.Router();
 
 router.get("/getfee", parentController.getFeesByParentId);
 router.get("/getfeesofstudent", parentController.getFeesOfStudent);
+router.get("/getstudents", parentController.getStudentsByParentId);
+router.get("/getmarksofstudent", parentController.getMarksByStudentId);
 
 export default router;

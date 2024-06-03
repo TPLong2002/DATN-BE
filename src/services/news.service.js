@@ -49,7 +49,7 @@ const getNewsBySort = async (
       raw: true,
       nest: true,
     });
-    return { status: 200, code: 1, message: "Success", data: { count, rows } };
+    return { status: 200, code: 0, message: "Success", data: { count, rows } };
   } catch (error) {
     return { status: 500, code: -1, message: error.message, data: "" };
   }
@@ -57,7 +57,7 @@ const getNewsBySort = async (
 const createNews = async (news) => {
   try {
     const newNews = await db.News.create(news);
-    return { status: 200, code: 1, message: "Success", data: newNews };
+    return { status: 200, code: 0, message: "Success", data: newNews };
   } catch (error) {
     return { status: 500, code: -1, message: error.message, data: "" };
   }
@@ -85,7 +85,7 @@ const getNewsById = async (id) => {
         },
       ],
     });
-    return { status: 200, code: 1, message: "Success", data: news };
+    return { status: 200, code: 0, message: "Success", data: news };
   } catch (error) {
     return { status: 500, code: -1, message: error.message, data: "" };
   }
@@ -93,7 +93,7 @@ const getNewsById = async (id) => {
 const getNewsByUserId = async (id) => {
   try {
     const news = await db.News.findAll({ where: { user_id: id } });
-    return { status: 200, code: 1, message: "Success", data: news };
+    return { status: 200, code: 0, message: "Success", data: news };
   } catch (error) {
     return { status: 500, code: -1, message: error.message, data: "" };
   }
@@ -101,7 +101,7 @@ const getNewsByUserId = async (id) => {
 const updateNews = async (data) => {
   try {
     await db.News.update(data, { where: { id: data.id } });
-    return { status: 200, code: 1, message: "Success", data: "" };
+    return { status: 200, code: 0, message: "Success", data: "" };
   } catch (error) {
     return { status: 500, code: -1, message: error.message, data: "" };
   }

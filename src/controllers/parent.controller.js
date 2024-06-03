@@ -15,4 +15,30 @@ const getFeesOfStudent = async (req, res) => {
     res.status(500).send(error.message);
   }
 };
-module.exports = { getFeesByParentId, getFeesOfStudent };
+const getStudentsByParentId = async (req, res) => {
+  try {
+    const students = await parentService.getStudentsByParentId(req.query.id);
+    res.status(students.status).send(students);
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+};
+const getMarksByStudentId = async (req, res) => {
+  try {
+    const response = await parentService.getMarksByStudentId(
+      req.query.student_id,
+      req.query.parent_id,
+      req.query.semester_id,
+      req.query.schoolyear_id
+    );
+    res.status(response.status).send(response);
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+};
+module.exports = {
+  getFeesByParentId,
+  getFeesOfStudent,
+  getStudentsByParentId,
+  getMarksByStudentId,
+};

@@ -154,7 +154,13 @@ const getMatksOfStudentsInClass = async (
     return { status: 500, message: error.message, code: -1, data: null };
   }
 };
-const getMatksOfStudentInClassById = async (class_id, subject_id, user_id) => {
+const getMatksOfStudentInClassById = async (
+  class_id,
+  subject_id,
+  user_id,
+  semester_id,
+  schoolyear_id
+) => {
   try {
     const res = await db.Marks.findAll({
       where: {
@@ -167,6 +173,8 @@ const getMatksOfStudentInClassById = async (class_id, subject_id, user_id) => {
           },
           user_id: user_id,
         },
+        schoolyear_id: schoolyear_id,
+        semester_id: semester_id,
       },
       include: [
         {
@@ -202,6 +210,8 @@ const updateOrCreateMarksOfStudent = async (data) => {
           user_id: item.user_id,
           subject_id: item.subject_id,
           marktype_id: item.marktype_id,
+          schoolyear_id: item.schoolyear_id,
+          semester_id: item.semester_id,
         },
       });
 

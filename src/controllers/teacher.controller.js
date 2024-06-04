@@ -67,6 +67,29 @@ const addTeacherToSubject = async (req, res) => {
     return res.status(500).send(error.message);
   }
 };
+const getSubjectIsTeaching = async (req, res) => {
+  try {
+    const response = await teacherService.getSubjectIsTeaching(
+      req.query.teacher_id,
+      req.query.schoolyear_id,
+      req.query.semester_id
+    );
+    return res.status(response.status).send(response);
+  } catch (error) {
+    return res.status(500).send(error.message);
+  }
+};
+const getClassOfSubjectIsTeaching = async (req, res) => {
+  try {
+    const response = await teacherService.getClassOfSubjectIsTeaching(
+      req.query.teacher_id,
+      req.query.subject_id
+    );
+    return res.status(response.status).send(response);
+  } catch (error) {
+    return res.status(500).send(error.message);
+  }
+};
 module.exports = {
   getClassSubjectByTeacherId,
   getSubjectByTeacherId,
@@ -76,4 +99,6 @@ module.exports = {
   getTeacherWithoutGVCN,
   getTeachersNotInSubject,
   addTeacherToSubject,
+  getSubjectIsTeaching,
+  getClassOfSubjectIsTeaching,
 };

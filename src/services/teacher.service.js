@@ -176,6 +176,77 @@ const addTeacherToSubject = async (data) => {
     return { status: 500, code: 1, message: "fail", data: "" };
   }
 };
+const getSubjectIsTeaching = async (teacher_id, schoolyear_id, semester_id) => {
+  try {
+    const res = await db.Users.findOne({
+      where: { id: teacher_id },
+      include: [
+        {
+          model: db.Subjects,
+          as: "User_Subjects",
+          attributes: ["id", "name"],
+          through: {
+            where: { ishidden: 0 },
+            attributes: [],
+          },
+        },
+        {
+          model: db.Classes,
+          as: "Teacher_Classes",
+          where: {
+            ishidden: 0,
+            schoolyear_id: schoolyear_id,
+          },
+          attributes: ["id", "name", "grade_id", "schoolyear_id", "gvcn_id"],
+          through: {
+            where: { ishidden: 0 },
+            attributes: [],
+          },
+        },
+      ],
+    });
+    if (res) {
+      return { status: 200, code: 0, message: "success", data: res };
+    } else {
+      return { status: 500, code: 1, message: "fail", data: "" };
+    }
+  } catch (error) {
+    return { status: 500, code: 1, message: error.message, data: "" };
+  }
+};
+const getClassOfSubjectIsTeaching = async (teacher_id, subject_id) => {
+  try {
+    const res = await db.Users.findOne({
+      where: { id: teacher_id },
+      include: [
+        {
+          model: db.Classes,
+          as: "Teacher_Classes",
+          where: { ishidden: 0 },
+          attributes: [
+            "id",
+            "name",
+            "grade_id",
+            "schoolyear_id",
+            "ishidden",
+            "gvcn_id",
+          ],
+          through: {
+            where: { subject_id: subject_id },
+            attributes: [],
+          },
+        },
+      ],
+    });
+    if (res) {
+      return { status: 200, code: 0, message: "success", data: res };
+    } else {
+      return { status: 500, code: 1, message: "fail", data: "" };
+    }
+  } catch (error) {
+    return { status: 500, code: 1, message: error.message, data: "" };
+  }
+};
 module.exports = {
   getClassSubjectByTeacherId,
   registerSubject,
@@ -185,4 +256,6 @@ module.exports = {
   getTeacherWithoutGVCN,
   getTeachersNotInSubject,
   addTeacherToSubject,
+  getSubjectIsTeaching,
+  getClassOfSubjectIsTeaching,
 };

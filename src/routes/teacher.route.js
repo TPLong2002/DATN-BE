@@ -15,5 +15,26 @@ router.get(
   "/classofsubjectisteaching",
   teacherController.getClassOfSubjectIsTeaching
 );
+router.get(
+  "/assignmentbyteacherid",
+  teacherController.getAssignmentByTeacherId
+);
+router.get("/assignmentbyid", teacherController.getAssignmentById);
+router.put("/updateassignment", teacherController.updateAssignment);
+router.get(
+  "/classesnotinassignment",
+  teacherController.getClassesNotInAssignmentOfTeacher
+);
+router.put("/changeclass", teacherController.changeClass);
+router.post("/createassignment", teacherController.createAssignment);
+router.get(
+  "/classesinassignment",
+  teacherController.getClassesInAssignmentOfTeacher
+);
+router.post("/addclasstoassignment", teacherController.addClassToAssignment);
+router.delete(
+  "/deleteclassfromassignment",
+  teacherController.deleteClassFromAssignment
+);
 
 export default router;

@@ -12,7 +12,7 @@ const getAllAssignmentsByStudentId = async (req, res) => {
 };
 const getStudentBySchoolyear = async (req, res) => {
   try {
-    const schoolyear = req.query.schoolyear;
+    const schoolyear = req.query.schoolyear_id;
     const response = await studentService.getStudentBySchoolyear(schoolyear);
     return res.status(response.status).send(response);
   } catch (error) {

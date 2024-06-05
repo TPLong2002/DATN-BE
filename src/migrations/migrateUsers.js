@@ -21,6 +21,9 @@ module.exports = {
       group_id: {
         type: Sequelize.INTEGER,
       },
+      schoolyear_id: {
+        type: Sequelize.INTEGER,
+      },
       islocked: {
         type: Sequelize.INTEGER,
         defaultValue: 0,

@@ -25,6 +25,7 @@ module.exports = (sequelize, DataTypes) => {
       subject_id: DataTypes.INTEGER,
       startdate: DataTypes.DATE,
       deadline: DataTypes.DATE,
+      image: DataTypes.STRING,
       ishidden: DataTypes.INTEGER,
     },
     {

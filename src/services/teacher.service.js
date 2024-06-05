@@ -177,6 +177,7 @@ const addTeacherToSubject = async (data) => {
   }
 };
 const getSubjectIsTeaching = async (teacher_id, schoolyear_id, semester_id) => {
+  console.log(teacher_id, schoolyear_id, semester_id);
   try {
     const res = await db.Users.findOne({
       where: { id: teacher_id },
@@ -247,6 +248,231 @@ const getClassOfSubjectIsTeaching = async (teacher_id, subject_id) => {
     return { status: 500, code: 1, message: error.message, data: "" };
   }
 };
+const getAssignmentByTeacherId = async (teacher_id, limit, page) => {
+  if (!limit) limit = 10;
+  if (!page) page = 1;
+  const offset = (page - 1) * limit;
+  console.log(teacher_id, limit, offset);
+  try {
+    const { rows, count } = await db.Assignments.findAndCountAll({
+      where: { teacher_id: teacher_id },
+      include: [
+        {
+          model: db.Classes,
+          as: "Assignment_Classes",
+          through: { attributes: [] },
+        },
+        {
+          model: db.Subjects,
+          attributes: ["id", "name"],
+        },
+        {
+          model: db.Users,
+          attributes: ["id", "username"],
+          include: {
+            model: db.Profiles,
+            attributes: ["firstName", "lastName"],
+          },
+        },
+      ],
+      limit: +limit,
+      offset: +offset,
+    });
+    if (rows && count) {
+      return {
+        status: 200,
+        code: 0,
+        message: "success",
+        data: { rows, count },
+      };
+    } else {
+      return { status: 500, code: 1, message: "fail", data: "" };
+    }
+  } catch (error) {
+    return { status: 500, code: 1, message: error.message, data: "" };
+  }
+};
+const getAssignmentById = async (id) => {
+  try {
+    const res = await db.Assignments.findOne({
+      where: { id: id },
+      include: [
+        {
+          model: db.Classes,
+          as: "Assignment_Classes",
+          through: { attributes: [] },
+        },
+        { model: db.Subjects, attributes: ["id", "name"] },
+        {
+          model: db.Users,
+          attributes: ["id", "username"],
+          include: {
+            model: db.Profiles,
+            attributes: ["firstName", "lastName"],
+          },
+        },
+      ],
+      raw: true,
+      nest: true,
+    });
+    if (res) {
+      return { status: 200, code: 0, message: "success", data: res };
+    } else {
+      return { status: 500, code: 1, message: "fail", data: "" };
+    }
+  } catch (error) {
+    return { status: 500, code: -1, message: error.message, data: "" };
+  }
+};
+const updateAssignment = async (data) => {
+  try {
+    const res = await db.Assignments.update(data, { where: { id: data.id } });
+    if (res) {
+      return { status: 200, code: 0, message: "success", data: res };
+    } else {
+      return { status: 500, code: 1, message: "fail", data: "" };
+    }
+  } catch (error) {
+    return { status: 500, code: -1, message: error.message, data: "" };
+  }
+};
+const getClassesNotInAssignmentOfTeacher = async (
+  teacher_id,
+  subject_id,
+  assignment_id
+) => {
+  try {
+    const res = await db.Classes.findAll({
+      where: {
+        [Op.and]: [
+          {
+            id: {
+              [Op.notIn]: db.Sequelize.literal(
+                `(SELECT class_id FROM Assignment_Class WHERE assignment_id = ${assignment_id})`
+              ),
+            },
+          },
+          {
+            id: {
+              [Op.in]: db.Sequelize.literal(
+                `(SELECT class_id FROM Class_Subject_User WHERE subject_id = ${subject_id} AND teacher_id = ${teacher_id})`
+              ),
+            },
+          },
+        ],
+        ishidden: 0,
+      },
+    });
+    if (res) {
+      return { status: 200, code: 0, message: "success", data: res };
+    } else {
+      return { status: 500, code: 1, message: "fail", data: "" };
+    }
+  } catch (error) {
+    return { status: 500, code: -1, message: error.message, data: "" };
+  }
+};
+const changeClass = async (data) => {
+  try {
+    const res = await db.Assignment_Class.update(data, {
+      where: { assignment_id: data.assignment_id },
+    });
+    if (res) {
+      return { status: 200, code: 0, message: "success", data: res };
+    } else {
+      return { status: 500, code: 1, message: "fail", data: "" };
+    }
+  } catch (error) {
+    return { status: 500, code: -1, message: error.message, data: "" };
+  }
+};
+const createAssignment = async (data) => {
+  try {
+    const res = await db.Assignments.create(data);
+    if (res) {
+      return { status: 200, code: 0, message: "success", data: res };
+    } else {
+      return { status: 500, code: 1, message: "fail", data: "" };
+    }
+  } catch (error) {
+    return { status: 500, code: -1, message: error.message, data: "" };
+  }
+};
+const getClassesInAssignmentOfTeacher = async (
+  teacher_id,
+  subject_id,
+  assignment_id
+) => {
+  try {
+    const res = await db.Classes.findAll({
+      where: {
+        [Op.and]: [
+          {
+            id: {
+              [Op.in]: db.Sequelize.literal(
+                `(SELECT class_id FROM Assignment_Class WHERE assignment_id = ${assignment_id})`
+              ),
+            },
+          },
+          {
+            id: {
+              [Op.in]: db.Sequelize.literal(
+                `(SELECT class_id FROM Class_Subject_User WHERE subject_id = ${subject_id} AND teacher_id = ${teacher_id})`
+              ),
+            },
+          },
+        ],
+        ishidden: 0,
+      },
+      include: [
+        {
+          model: db.Schoolyears,
+        },
+        {
+          model: db.Assignments,
+          as: "Class_Assignments",
+          through: {
+            attributes: ["id"],
+            where: { assignment_id: assignment_id },
+          },
+        },
+      ],
+    });
+    if (res) {
+      return { status: 200, code: 0, message: "success", data: res };
+    } else {
+      return { status: 500, code: 1, message: "fail", data: "" };
+    }
+  } catch (error) {
+    return { status: 500, code: -1, message: error.message, data: "" };
+  }
+};
+const addClassToAssignment = async (data) => {
+  try {
+    const res = await db.Assignment_Class.bulkCreate(data);
+    if (res) {
+      return { status: 200, code: 0, message: "success", data: res };
+    } else {
+      return { status: 500, code: 1, message: "fail", data: "" };
+    }
+  } catch (error) {
+    return { status: 500, code: 1, message: "fail", data: "" };
+  }
+};
+const deleteClassFromAssignment = async (data) => {
+  try {
+    const res = await db.Assignment_Class.destroy({
+      where: { id: data.id },
+    });
+    if (res) {
+      return { status: 200, code: 0, message: "success", data: res };
+    } else {
+      return { status: 500, code: 1, message: "fail", data: "" };
+    }
+  } catch (error) {
+    return { status: 500, code: 1, message: "fail", data: "" };
+  }
+};
 module.exports = {
   getClassSubjectByTeacherId,
   registerSubject,
@@ -258,4 +484,13 @@ module.exports = {
   addTeacherToSubject,
   getSubjectIsTeaching,
   getClassOfSubjectIsTeaching,
+  getAssignmentByTeacherId,
+  getAssignmentById,
+  updateAssignment,
+  getClassesNotInAssignmentOfTeacher,
+  changeClass,
+  createAssignment,
+  getClassesInAssignmentOfTeacher,
+  addClassToAssignment,
+  deleteClassFromAssignment,
 };

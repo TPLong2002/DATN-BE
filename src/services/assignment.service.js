@@ -7,7 +7,6 @@ const getAssignments = async (limit, page) => {
   const offset = (page - 1) * limit;
   try {
     const { rows, count } = await db.Assignments.findAndCountAll({
-      where: { ishidden: 0 },
       include: [
         {
           model: db.Classes,
@@ -24,8 +23,8 @@ const getAssignments = async (limit, page) => {
           },
         },
       ],
-      limit: limit,
-      offset: offset,
+      limit: +limit,
+      offset: +offset,
       raw: true,
       nest: true,
     });
@@ -188,24 +187,26 @@ const getClassesNotInAssignmentOfTeacher = async (
         {
           model: db.Users,
           as: "Class_Teacher",
-          through: {
-            where: { subject_id: subject_id, teacher_id: teacher_id },
-          },
         },
       ],
       where: {
-        id: {
-          [Op.notIn]: [
-            db.Sequelize.literal(
-              `(SELECT class_id FROM Assignment_Class WHERE assignment_id = ${assignment_id})`
-            ),
-          ],
-          [Op.in]: [
-            db.Sequelize.literal(
-              `(SELECT class_id FROM Class_Subject_User WHERE subject_id = ${subject_id} AND teacher_id = ${teacher_id})`
-            ),
-          ],
-        },
+        [Op.and]: [
+          {
+            id: {
+              [Op.notIn]: db.Sequelize.literal(
+                `(SELECT class_id FROM Assignment_Class WHERE assignment_id = ${assignment_id})`
+              ),
+            },
+          },
+          {
+            id: {
+              [Op.in]: db.Sequelize.literal(
+                `(SELECT class_id FROM Class_Subject_User WHERE subject_id = ${subject_id} AND teacher_id = ${teacher_id})`
+              ),
+            },
+          },
+        ],
+        ishidden: 0,
       },
     });
     if (res) {
@@ -219,7 +220,6 @@ const getClassesNotInAssignmentOfTeacher = async (
 };
 const changeClass = async (data) => {
   try {
-    console.log(data);
     const res = await db.Assignment_Class.update(data, {
       where: { assignment_id: data.assignment_id },
     });

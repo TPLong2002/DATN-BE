@@ -21,6 +21,9 @@ module.exports = {
       subject_id: {
         type: Sequelize.INTEGER,
       },
+      image: {
+        type: Sequelize.STRING,
+      },
       startdate: {
         type: Sequelize.DATE,
       },

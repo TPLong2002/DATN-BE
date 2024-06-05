@@ -9,6 +9,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       Users.belongsTo(models.Groups, { foreignKey: "group_id", as: "Group" });
+      Users.belongsTo(models.Schoolyears, { foreignKey: "schoolyear_id" });
       Users.belongsToMany(models.Users, {
         as: "User_Parents",
         through: "Parent_Student",
@@ -69,6 +70,7 @@ module.exports = (sequelize, DataTypes) => {
       group_id: DataTypes.INTEGER,
       islocked: DataTypes.INTEGER,
       isdeleted: DataTypes.INTEGER,
+      schoolyear_id: DataTypes.INTEGER,
     },
     {
       sequelize,

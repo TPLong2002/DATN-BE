@@ -31,13 +31,11 @@ const getAllAssignmentsByStudentId = async (studentId) => {
     return { status: 500, code: 1, message: error.message, data: [] };
   }
 };
-const getStudentBySchoolyear = async (schoolyear) => {
+const getStudentBySchoolyear = async (schoolyear_id) => {
   try {
     const students = await db.Users.findAll({
       where: {
-        username: {
-          [Op.like]: "HS" + schoolyear + "%", // Tìm kiếm các học sinh có tên người dùng bắt đầu bằng "HS" kèm theo schoolyear
-        },
+        schoolyear_id: schoolyear_id,
         id: {
           [Op.notIn]: db.sequelize.literal(
             `(SELECT user_id FROM Class_User)` // Lấy danh sách các user_id đã tồn tại trong bảng Class_User
@@ -49,6 +47,7 @@ const getStudentBySchoolyear = async (schoolyear) => {
           model: db.Profiles,
           attributes: ["firstname", "lastname"],
         },
+        { model: db.Groups, as: "Group", where: { description: "Student" } },
       ],
     });
     if (students) {

@@ -103,6 +103,28 @@ const getSubjectByGradeId = async (grade_id) => {
     return { status: 500, code: -1, message: error.message, data: "" };
   }
 };
+const getSubjectByClassId = async (class_id, schoolyear_id) => {
+  try {
+    const res = await db.Classes.findOne({
+      where: { ishidden: 0, id: class_id, schoolyear_id: schoolyear_id },
+      include: [
+        {
+          model: db.Subjects,
+          as: "Class_Subjects",
+          through: { attributes: [] },
+        },
+      ],
+    });
+    if (res) {
+      return { status: 200, code: 0, message: "success", data: res };
+    } else {
+      return { status: 500, code: 1, message: "fail", data: {} };
+    }
+  } catch (error) {
+    return { status: 500, code: -1, message: error.message, data: "" };
+  }
+};
+// const getMarksByStudentId = async (student_id, schoolyear_id) => {};
 module.exports = {
   getAllSubjects,
   updateSubject,
@@ -111,4 +133,5 @@ module.exports = {
   hiddenSubject,
   getSubjectById,
   getSubjectByGradeId,
+  getSubjectByClassId,
 };

@@ -269,44 +269,7 @@ const getUsersByGroupId = async (limit, page, group_id, isdeleted, search) => {
     };
   }
 };
-const getUsersBySearch = async (limit, page, search) => {
-  if (!limit) limit = 10;
-  if (!page) page = 1;
 
-  const offset = (page - 1) * limit;
-  try {
-    const { count, rows } = await db.Users.findAndCountAll({
-      where: {
-        [Op.or]: [
-          {
-            username: {
-              [Op.like]: `%${search}%`,
-            },
-          },
-          {
-            email: {
-              [Op.like]: `%${search}%`,
-            },
-          },
-        ],
-      },
-      limit: +limit,
-      offset: +offset,
-      raw: true,
-      nest: true,
-    });
-    return { status: 200, code: 0, message: "success", data: { count, rows } };
-  } catch (err) {
-    console.log(err);
-    return {
-      status: 500,
-      status: 500,
-      code: -1,
-      message: "errService",
-      data: [],
-    };
-  }
-};
 module.exports = {
   getAllUsers,
   createUser,

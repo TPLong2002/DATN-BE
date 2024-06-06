@@ -36,5 +36,9 @@ router.delete(
   "/deleteclassfromassignment",
   teacherController.deleteClassFromAssignment
 );
+router.get(
+  "/teacherbyclasssubject",
+  teacherController.getTeacherByClassSubject
+);
 
 export default router;

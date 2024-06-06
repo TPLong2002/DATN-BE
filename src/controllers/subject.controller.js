@@ -71,6 +71,19 @@ const getSubjectByGradeId = async (req, res) => {
       .send({ status: 500, code: -1, message: error.message, data: "" });
   }
 };
+const getSubjectByClassId = async (req, res) => {
+  try {
+    const response = await subjectService.getSubjectByClassId(
+      req.query.class_id,
+      req.query.schoolyear_id
+    );
+    res.status(response.status).send(response);
+  } catch (error) {
+    res
+      .status(500)
+      .send({ status: 500, code: -1, message: error.message, data: "" });
+  }
+};
 module.exports = {
   getAllSubjects,
   updateSubject,
@@ -78,4 +91,5 @@ module.exports = {
   hiddenSubject,
   getSubjects,
   getSubjectByGradeId,
+  getSubjectByClassId,
 };

@@ -473,6 +473,31 @@ const deleteClassFromAssignment = async (data) => {
     return { status: 500, code: 1, message: "fail", data: "" };
   }
 };
+const getTeacherByClassSubject = async (subject_id, class_id) => {
+  console.log(subject_id, class_id);
+  try {
+    const teacher = await db.Class_Subject_User.findOne({
+      where: { subject_id: subject_id, class_id: class_id },
+      attributes: ["teacher_id"],
+    });
+    const res = await db.Users.findOne({
+      where: { id: teacher.teacher_id },
+      include: [
+        {
+          model: db.Profiles,
+          attributes: ["firstName", "lastName"],
+        },
+      ],
+    });
+    if (res) {
+      return { status: 200, code: 0, message: "success", data: res };
+    } else {
+      return { status: 500, code: 1, message: "fail", data: "" };
+    }
+  } catch (error) {
+    return { status: 500, code: 1, message: error.message, data: "" };
+  }
+};
 module.exports = {
   getClassSubjectByTeacherId,
   registerSubject,
@@ -493,4 +518,5 @@ module.exports = {
   getClassesInAssignmentOfTeacher,
   addClassToAssignment,
   deleteClassFromAssignment,
+  getTeacherByClassSubject,
 };

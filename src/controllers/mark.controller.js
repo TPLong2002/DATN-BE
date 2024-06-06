@@ -1,7 +1,11 @@
 import markService from "../services/mark.service";
 const getMarksByStudentId = async (req, res) => {
   try {
-    const response = await markService.getMarksByStudentId(req.query.studentId);
+    const response = await markService.getMarksByStudentId(
+      req.query.student_id,
+      req.query.schoolyear_id,
+      req.query.semester_id
+    );
     return res.status(response.status).json({
       code: response.code,
       message: response.message,

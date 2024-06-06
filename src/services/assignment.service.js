@@ -25,8 +25,6 @@ const getAssignments = async (limit, page) => {
       ],
       limit: +limit,
       offset: +offset,
-      raw: true,
-      nest: true,
     });
     if (rows) {
       return {

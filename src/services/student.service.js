@@ -8,10 +8,12 @@ const getAllAssignmentsByStudentId = async (studentId) => {
         {
           model: db.Classes,
           as: "Student_Classes",
+          where: { ishidden: 0 },
           include: [
             {
               as: "Class_Assignments",
               model: db.Assignments,
+              where: { ishidden: 0 },
               include: [
                 {
                   model: db.Subjects,

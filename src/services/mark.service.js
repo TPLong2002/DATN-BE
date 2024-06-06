@@ -1,12 +1,15 @@
 import db from "../models";
 import { Op } from "sequelize";
-const getMarksByStudentId = async (studentId) => {
+const getMarksByStudentId = async (student_id, schoolyear_id, semester_id) => {
   try {
     const res = await db.Users.findOne({
-      where: { id: studentId },
+      where: {
+        id: student_id,
+      },
       include: [
         {
           model: db.Marks,
+          where: { schoolyear_id: schoolyear_id, semester_id: semester_id },
           include: [
             {
               model: db.Subjects,

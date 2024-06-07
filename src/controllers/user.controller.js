@@ -139,6 +139,18 @@ const unlockUser = async (req, res) => {
     return res.status(500).json({ error: err.message });
   }
 };
+const countUsersOfGroup = async (req, res) => {
+  try {
+    var response = await userServices.countUsersOfGroup(req.query.group_id);
+    return res.status(response.status).json({
+      code: response.code,
+      message: response.message,
+      data: response.data,
+    });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+};
 module.exports = {
   getAllUsers,
   createUser,
@@ -150,4 +162,5 @@ module.exports = {
   getUsersLock,
   lockUser,
   unlockUser,
+  countUsersOfGroup,
 };

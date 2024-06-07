@@ -227,7 +227,6 @@ const unlockUser = async (data) => {
   }
 };
 const getUsersByGroupId = async (limit, page, group_id, isdeleted, search) => {
-  console.log(page, limit, group_id);
   if (!limit) limit = 10;
   if (!page) page = 1;
 
@@ -269,7 +268,23 @@ const getUsersByGroupId = async (limit, page, group_id, isdeleted, search) => {
     };
   }
 };
-
+const countUsersOfGroup = async (group_id) => {
+  try {
+    const count = await db.Users.count({
+      where: { group_id: group_id },
+    });
+    return { status: 200, code: 0, message: "success", data: count };
+  } catch (err) {
+    console.log(err);
+    return {
+      status: 500,
+      status: 500,
+      code: -1,
+      message: "errService",
+      data: [],
+    };
+  }
+};
 module.exports = {
   getAllUsers,
   createUser,
@@ -282,4 +297,5 @@ module.exports = {
   lockUser,
   unlockUser,
   getUsersByGroupId,
+  countUsersOfGroup,
 };

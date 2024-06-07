@@ -9,11 +9,20 @@ const getAllClass = async (limit, page, grade_id, schoolyear_id) => {
     const condition2 = schoolyear_id ? { schoolyear_id: schoolyear_id } : {};
     const { count, rows } = await db.Classes.findAndCountAll({
       where: { ...condition1, ...condition2 },
-      include: {
-        model: db.Users,
-        as: "GVCN",
-        include: { model: db.Profiles, attributes: ["firstname", "lastname"] },
-      },
+      include: [
+        {
+          model: db.Users,
+          as: "GVCN",
+          include: {
+            model: db.Profiles,
+            attributes: ["firstname", "lastname"],
+          },
+        },
+        {
+          model: db.Schoolyears,
+          attributes: ["name"],
+        },
+      ],
       limit: +limit,
       offset: +offset,
       raw: true,
@@ -34,6 +43,17 @@ const getClasses = async () => {
   try {
     const res = await db.Classes.findAll({
       where: { ishidden: 0 },
+      include: [
+        {
+          model: db.Users,
+          as: "GVCN",
+          include: {
+            model: db.Profiles,
+            attributes: ["firstname", "lastname"],
+          },
+        },
+        { model: db.Schoolyears, attributes: ["name"] },
+      ],
     });
     if (res) {
       return { status: 200, code: 0, message: "success", data: res };

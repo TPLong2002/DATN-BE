@@ -99,7 +99,6 @@ const getNewsByUserId = async (id) => {
   }
 };
 const updateNews = async (data) => {
-  console.log(data);
   try {
     await db.News.update(data, { where: { id: data.id } });
     return { status: 200, code: 0, message: "Success", data: "" };

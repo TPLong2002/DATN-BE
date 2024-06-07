@@ -60,6 +60,8 @@ module.exports = (sequelize, DataTypes) => {
       Users.hasMany(models.Messages, { foreignKey: "sender_id" });
       Users.hasMany(models.News, { foreignKey: "user_id" });
       Users.hasMany(models.Marks, { foreignKey: "user_id" });
+      Users.hasMany(models.Paymenthistories, { foreignKey: "student_id" });
+      Users.hasMany(models.Paymenthistories, { foreignKey: "parent_id" });
     }
   }
   Users.init(

@@ -1,9 +1,14 @@
 import db from "../models";
-import { Op, where } from "sequelize";
-const getAllAssignmentsByStudentId = async (studentId) => {
+import { Op } from "sequelize";
+const getAllAssignmentsByStudentId = async (
+  student_id,
+  limit = 10,
+  page = 1
+) => {
   try {
-    const res = await db.Users.findOne({
-      where: { id: studentId },
+    const offset = (page - 1) * limit;
+    const { rows, count } = await db.Users.findAndCountAll({
+      where: { id: student_id },
       include: [
         {
           model: db.Classes,
@@ -18,16 +23,33 @@ const getAllAssignmentsByStudentId = async (studentId) => {
                 {
                   model: db.Subjects,
                 },
+                {
+                  model: db.Users,
+                  attributes: ["id"],
+                  include: [
+                    {
+                      model: db.Profiles,
+                      attributes: ["firstname", "lastname"],
+                    },
+                  ],
+                },
               ],
             },
           ],
         },
       ],
+      limit: +limit,
+      offset: +offset,
     });
-    if (res) {
-      return { status: 200, code: 0, message: "Success", data: res };
+    if (rows) {
+      return {
+        status: 200,
+        code: 0,
+        message: "Success",
+        data: { rows, count },
+      };
     } else {
-      return { status: 500, code: 1, message: "Not found", data: [] };
+      return { status: 500, code: 1, message: "Not found", data: {} };
     }
   } catch (error) {
     return { status: 500, code: 1, message: error.message, data: [] };
@@ -61,8 +83,38 @@ const getStudentBySchoolyear = async (schoolyear_id) => {
     return { status: 500, code: 1, message: error.message, data: [] };
   }
 };
-
+const getAssignmentById = async (id) => {
+  try {
+    const res = await db.Assignments.findOne({
+      where: { id: id },
+      include: [
+        {
+          model: db.Classes,
+          as: "Assignment_Classes",
+          through: { attributes: [] },
+        },
+        { model: db.Subjects, attributes: ["id", "name"] },
+        {
+          model: db.Users,
+          attributes: ["id", "username"],
+          include: {
+            model: db.Profiles,
+            attributes: ["firstName", "lastName"],
+          },
+        },
+      ],
+    });
+    if (res) {
+      return { status: 200, code: 0, message: "success", data: res };
+    } else {
+      return { status: 500, code: 1, message: "fail", data: "" };
+    }
+  } catch (error) {
+    return { status: 500, code: -1, message: error.message, data: "" };
+  }
+};
 module.exports = {
   getAllAssignmentsByStudentId,
   getStudentBySchoolyear,
+  getAssignmentById,
 };

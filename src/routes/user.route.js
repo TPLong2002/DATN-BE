@@ -284,4 +284,6 @@ router.post("/unlock", userController.unlockUser);
  */
 router.delete("/", userController.delUser);
 
+router.get("/countusersofgroup", userController.countUsersOfGroup);
+
 export default router;

@@ -11,6 +11,9 @@ module.exports = (sequelize, DataTypes) => {
       Profiles.belongsTo(models.Users, {
         foreignKey: "user_id",
       });
+      Profiles.belongsTo(models.Genders, {
+        foreignKey: "gender_id",
+      });
     }
   }
   Profiles.init(
@@ -22,6 +25,7 @@ module.exports = (sequelize, DataTypes) => {
       avt: DataTypes.STRING,
       CCCD: DataTypes.STRING,
       address: DataTypes.STRING,
+      gender_id: DataTypes.INTEGER,
       dateOfBirth: DataTypes.DATE,
     },
     {

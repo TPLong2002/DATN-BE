@@ -498,6 +498,37 @@ const getTeacherByClassSubject = async (subject_id, class_id) => {
     return { status: 500, code: 1, message: error.message, data: "" };
   }
 };
+const countTeacherBySubject = async () => {
+  try {
+    const res = await db.Subjects.findAll({
+      attributes: [
+        "id",
+        "name",
+        [
+          db.sequelize.fn("COUNT", db.sequelize.col("SubjectUsers.id")),
+          "teacher_count",
+        ],
+      ],
+      include: [
+        {
+          model: db.Users,
+          as: "SubjectUsers",
+          attributes: [],
+          through: { attributes: [] }, // Loại bỏ các thuộc tính của bảng liên kết
+        },
+      ],
+      group: ["Subjects.id"], // Nhóm theo id của môn học
+    });
+
+    if (res) {
+      return { status: 200, code: 0, message: "success", data: res };
+    } else {
+      return { status: 500, code: 1, message: "fail", data: "" };
+    }
+  } catch (error) {
+    return { status: 500, code: 1, message: error.message, data: "" };
+  }
+};
 module.exports = {
   getClassSubjectByTeacherId,
   registerSubject,
@@ -519,4 +550,5 @@ module.exports = {
   addClassToAssignment,
   deleteClassFromAssignment,
   getTeacherByClassSubject,
+  countTeacherBySubject,
 };

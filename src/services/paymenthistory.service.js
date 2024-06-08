@@ -52,4 +52,48 @@ const getPaymentHistory = async (data) => {
     return { status: 500, code: -1, message: error.message, data: "" };
   }
 };
-module.exports = { getPaymentHistory };
+const { Sequelize, or } = require("sequelize");
+
+const getAllAmountByYear = async (sort = "ASC") => {
+  try {
+    const result = await db.Schoolyears.findAll({
+      include: [
+        {
+          model: db.Fees,
+          include: [
+            {
+              model: db.Paymenthistories,
+              include: [
+                {
+                  model: db.Paymentstatuses,
+                  where: { code: 0 },
+                },
+              ],
+            },
+          ],
+        },
+      ],
+      order: [["name", sort]],
+    });
+
+    if (result) {
+      return {
+        status: 200,
+        code: 0,
+        message: "success",
+        data: result,
+      };
+    } else {
+      return {
+        status: 404,
+        code: 1,
+        message: "School year not found",
+        data: "",
+      };
+    }
+  } catch (error) {
+    return { status: 500, code: -1, message: error.message, data: "" };
+  }
+};
+
+module.exports = { getPaymentHistory, getAllAmountByYear };

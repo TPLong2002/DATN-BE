@@ -235,6 +235,20 @@ const deleteSubjectFromClass = async (data) => {
     return { status: 500, code: -1, message: error.message, data: "" };
   }
 };
+const countClassesByGrade = async (grade_id) => {
+  try {
+    const res = await db.Classes.count({
+      where: { grade_id: grade_id },
+    });
+    if (res) {
+      return { status: 200, code: 0, message: "success", data: res };
+    } else {
+      return { status: 500, code: 1, message: "fail", data: "" };
+    }
+  } catch (error) {
+    return { status: 500, code: -1, message: error.message, data: "" };
+  }
+};
 module.exports = {
   getAllClass,
   getClassById,
@@ -247,4 +261,5 @@ module.exports = {
   getSubjectsByClassId,
   deleteSubjectFromClass,
   getClasses,
+  countClassesByGrade,
 };

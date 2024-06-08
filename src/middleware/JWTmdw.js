@@ -10,6 +10,7 @@ const nonSecurePaths = [
   "/forgot-password",
   "/reset-password",
   "/news/getnewsbysort",
+  "/payment/callback",
 ];
 const createToken = (data) => {
   let token = "";

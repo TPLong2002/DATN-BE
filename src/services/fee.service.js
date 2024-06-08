@@ -158,6 +158,20 @@ const addUsersToFee = async (data) => {
     return { status: 500, code: -1, message: error.message, data: [] };
   }
 };
+const countFeeAvailable = async () => {
+  try {
+    const res = await db.Fees.count({
+      where: { ishidden: 0 },
+    });
+    if (res) {
+      return { status: 200, code: 0, message: "Success", data: res };
+    } else {
+      return { status: 500, code: 1, message: "Fail", data: [] };
+    }
+  } catch (error) {
+    return { status: 500, code: -1, message: error.message, data: [] };
+  }
+};
 
 module.exports = {
   getAllFee,
@@ -168,4 +182,5 @@ module.exports = {
   deleteUsersOfFee,
   getStudentNotInFee,
   addUsersToFee,
+  countFeeAvailable,
 };

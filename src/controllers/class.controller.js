@@ -86,6 +86,14 @@ const deleteSubjectFromClass = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+const countClassesByGrade = async (req, res) => {
+  try {
+    const classes = await classService.countClassesByGrade(req.query.grade_id);
+    res.status(200).json(classes);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 module.exports = {
   getAllClass,
   createClass,
@@ -96,4 +104,5 @@ module.exports = {
   addStudentToClass,
   getSubjectsByClassId,
   deleteSubjectFromClass,
+  countClassesByGrade,
 };

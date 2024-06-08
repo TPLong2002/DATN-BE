@@ -1,5 +1,5 @@
 import db from "../models";
-import { Op } from "sequelize";
+import { Op, where } from "sequelize";
 const getAllAssignmentsByStudentId = async (
   student_id,
   limit = 10,
@@ -113,8 +113,109 @@ const getAssignmentById = async (id) => {
     return { status: 500, code: -1, message: error.message, data: "" };
   }
 };
+const countStudentByGrade = async () => {
+  try {
+    const res = await db.Classes.findAll({
+      attributes: [
+        "grade_id",
+        [
+          db.sequelize.fn("COUNT", db.sequelize.col("Class_Students.id")),
+          "student_count",
+        ],
+        // [
+        //   db.sequelize.fn(
+        //     "SUM",
+        //     db.sequelize.literal(
+        //       'CASE WHEN `Class_Students->Profile->Gender`.`description` = "Nam" THEN 1 ELSE 0 END'
+        //     )
+        //   ),
+        //   "male_count",
+        // ],
+        // [
+        //   db.sequelize.fn(
+        //     "SUM",
+        //     db.sequelize.literal(
+        //       'CASE WHEN `Class_Students->Profile->Gender`.`description` = "Nữ" THEN 1 ELSE 0 END'
+        //     )
+        //   ),
+        //   "female_count",
+        // ],
+      ],
+      include: [
+        {
+          model: db.Users,
+          as: "Class_Students",
+          attributes: [],
+          include: [
+            {
+              model: db.Profiles,
+              attributes: [],
+              include: [
+                {
+                  model: db.Genders,
+                  attributes: [],
+                  as: "Gender",
+                },
+              ],
+            },
+          ],
+        },
+        {
+          model: db.Grades,
+          attributes: ["name"],
+        },
+      ],
+      where: { ishidden: 0 },
+      group: ["grade_id"],
+    });
+
+    if (res) {
+      return { status: 200, code: 0, message: "success", data: res };
+    } else {
+      return { status: 500, code: 1, message: "fail", data: "" };
+    }
+  } catch (error) {
+    return { status: 500, code: -1, message: error.message, data: "" };
+  }
+};
+const countStudentBySchoolyear = async () => {
+  try {
+    const res = await db.Users.findAll({
+      attributes: [
+        "schoolyear_id",
+        [
+          db.sequelize.fn("COUNT", db.sequelize.col("Users.id")),
+          "student_count",
+        ],
+      ],
+      include: [
+        {
+          model: db.Groups,
+          as: "Group",
+          where: { name: "student" },
+        },
+        {
+          model: db.Schoolyears,
+          attributes: ["name"],
+        },
+      ],
+      where: { isdeleted: 0 },
+      group: ["schoolyear_id"],
+    });
+    if (res) {
+      return { status: 200, code: 0, message: "success", data: res };
+    } else {
+      return { status: 500, code: 1, message: "fail", data: "" };
+    }
+  } catch (error) {
+    return { status: 500, code: -1, message: error.message, data: "" };
+  }
+};
+
 module.exports = {
   getAllAssignmentsByStudentId,
   getStudentBySchoolyear,
   getAssignmentById,
+  countStudentByGrade,
+  countStudentBySchoolyear,
 };

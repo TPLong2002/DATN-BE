@@ -40,5 +40,6 @@ router.get(
   "/teacherbyclasssubject",
   teacherController.getTeacherByClassSubject
 );
+router.get("/countteacherbysubject", teacherController.countTeacherBySubject);
 
 export default router;

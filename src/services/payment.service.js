@@ -11,6 +11,7 @@ const create = async (data) => {
     raw: true,
     nest: true,
   });
+
   if (fee && +fee.status != 1) {
     var accessKey = process.env.accessKey;
     var secretKey = process.env.secretKey;

@@ -11,5 +11,6 @@ router.delete("/students", classController.kickUserFromClass);
 router.post("/students", classController.addStudentToClass);
 router.get("/subjects", classController.getSubjectsByClassId);
 router.delete("/subjects", classController.deleteSubjectFromClass);
+router.get("/countclasses", classController.countClassesByGrade);
 
 export default router;

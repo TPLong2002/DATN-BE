@@ -5,5 +5,7 @@ const router = express.Router();
 router.get("/assignments", studentController.getAllAssignmentsByStudentId);
 router.get("/schoolyear", studentController.getStudentBySchoolyear);
 router.get("/assignment", studentController.getAssignmentById);
+router.get("/countgrade", studentController.countStudentByGrade);
+router.get("/countschoolyear", studentController.countStudentBySchoolyear);
 
 export default router;

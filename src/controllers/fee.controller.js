@@ -60,6 +60,14 @@ const addUsersToFee = async (req, res) => {
     return res.status(500).send(error.message);
   }
 };
+const countFeeAvailable = async (req, res) => {
+  try {
+    const response = await feeService.countFeeAvailable();
+    return res.status(response.status).send(response);
+  } catch (error) {
+    return res.status(500).send(error.message);
+  }
+};
 module.exports = {
   getAllFee,
   createFee,
@@ -68,4 +76,5 @@ module.exports = {
   deleteUsersOfFee,
   getStudentNotInFee,
   addUsersToFee,
+  countFeeAvailable,
 };

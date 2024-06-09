@@ -68,6 +68,41 @@ const countFeeAvailable = async (req, res) => {
     return res.status(500).send(error.message);
   }
 };
+const amountOfFees = async (req, res) => {
+  try {
+    const response = await feeService.amountOfFees();
+    return res.status(response.status).send(response);
+  } catch (error) {
+    return res.status(500).send(error.message);
+  }
+};
+const getFeeBySchoolyearGrade = async (req, res) => {
+  try {
+    const response = await feeService.getFeeBySchoolyearGrade(
+      req.query.schoolyear_id,
+      req.query.grade_id
+    );
+    return res.status(response.status).send(response);
+  } catch (error) {
+    return res.status(500).send(error.message);
+  }
+};
+const amountOfFee = async (req, res) => {
+  try {
+    const response = await feeService.amountOfFee(req.query.fee_id);
+    return res.status(response.status).send(response);
+  } catch (error) {
+    return res.status(500).send(error.message);
+  }
+};
+const amountOfFeesAvailable = async (req, res) => {
+  try {
+    const response = await feeService.amountOfFeesAvailable();
+    return res.status(response.status).send(response);
+  } catch (error) {
+    return res.status(500).send(error.message);
+  }
+};
 module.exports = {
   getAllFee,
   createFee,
@@ -77,4 +112,8 @@ module.exports = {
   getStudentNotInFee,
   addUsersToFee,
   countFeeAvailable,
+  amountOfFees,
+  getFeeBySchoolyearGrade,
+  amountOfFee,
+  amountOfFeesAvailable,
 };

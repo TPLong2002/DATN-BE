@@ -172,7 +172,123 @@ const countFeeAvailable = async () => {
     return { status: 500, code: -1, message: error.message, data: [] };
   }
 };
-
+const amountOfFees = async () => {
+  try {
+    const res = await db.Fees.findAll({
+      where: { ishidden: 0 },
+      include: [
+        {
+          model: db.Paymenthistories,
+          where: { ishidden: 0 },
+          attributes: [],
+        },
+      ],
+      attributes: [
+        "name",
+        [
+          db.Sequelize.literal(
+            `SUM(CASE WHEN Paymenthistories.paymentstatus_id = 2 THEN Paymenthistories.amount ELSE 0 END)`
+          ),
+          "unpaidAmount",
+        ],
+        [
+          db.Sequelize.literal(
+            `SUM(CASE WHEN Paymenthistories.paymentstatus_id = 1 THEN Paymenthistories.amount ELSE 0 END)`
+          ),
+          "paidAmount",
+        ],
+      ],
+      group: ["Fees.id"],
+    });
+    if (res) {
+      return { status: 200, code: 0, message: "Success", data: res };
+    } else {
+      return { status: 500, code: 1, message: "Fail", data: [] };
+    }
+  } catch (error) {
+    return { status: 500, code: -1, message: error.message, data: [] };
+  }
+};
+const getFeeBySchoolyearGrade = async (schoolyear_id, grade_id) => {
+  try {
+    const res = await db.Fees.findAll({
+      where: { schoolyear_id: schoolyear_id, grade_id: grade_id },
+    });
+    if (res) {
+      return { status: 200, code: 0, message: "Success", data: res };
+    } else {
+      return { status: 500, code: 1, message: "Fail", data: [] };
+    }
+  } catch (error) {
+    return { status: 500, code: -1, message: error.message, data: [] };
+  }
+};
+const amountOfFee = async (fee_id) => {
+  try {
+    const res = await db.Fees.findOne({
+      where: { id: fee_id },
+      include: [
+        {
+          model: db.Paymenthistories,
+          where: { ishidden: 0 },
+          attributes: [],
+        },
+      ],
+      attributes: [
+        "name",
+        [
+          db.Sequelize.literal(
+            `SUM(CASE WHEN Paymenthistories.paymentstatus_id = 2 THEN Paymenthistories.amount ELSE 0 END)`
+          ),
+          "unpaidAmount",
+        ],
+        [
+          db.Sequelize.literal(
+            `SUM(CASE WHEN Paymenthistories.paymentstatus_id = 1 THEN Paymenthistories.amount ELSE 0 END)`
+          ),
+          "paidAmount",
+        ],
+      ],
+      group: ["Fees.id"],
+    });
+    if (res) {
+      return { status: 200, code: 0, message: "Success", data: res };
+    } else {
+      return { status: 500, code: 1, message: "Fail", data: [] };
+    }
+  } catch (error) {
+    return { status: 500, code: -1, message: error.message, data: [] };
+  }
+};
+const amountOfFeesAvailable = async () => {
+  try {
+    const res = await db.Fees.findAll({
+      where: { ishidden: 0 },
+      include: [
+        {
+          model: db.Paymenthistories,
+          where: { ishidden: 0 },
+          attributes: [],
+        },
+      ],
+      attributes: [
+        [
+          db.Sequelize.literal(
+            `SUM(CASE WHEN Paymenthistories.paymentstatus_id = 1 THEN Paymenthistories.amount ELSE 0 END)`
+          ),
+          "paidAmount",
+        ],
+      ],
+    });
+    if (res) {
+      return { status: 200, code: 0, message: "Success", data: res };
+    } else {
+      return { status: 500, code: 1, message: "Fail", data: [] };
+    }
+  } catch (error) {
+    return { status: 500, code: -1, message: error.message, data: [] };
+  }
+};
 module.exports = {
   getAllFee,
   getFeeById,
@@ -183,4 +299,8 @@ module.exports = {
   getStudentNotInFee,
   addUsersToFee,
   countFeeAvailable,
+  amountOfFees,
+  getFeeBySchoolyearGrade,
+  amountOfFee,
+  amountOfFeesAvailable,
 };

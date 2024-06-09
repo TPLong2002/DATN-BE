@@ -10,4 +10,8 @@ router.delete("/studentsoffee", feeController.deleteUsersOfFee);
 router.post("/studentsoffee", feeController.addUsersToFee);
 router.get("/studentnotinfofee", feeController.getStudentNotInFee);
 router.get("/countfeeavailable", feeController.countFeeAvailable);
+router.get("/amountoffees", feeController.amountOfFees);
+router.get("/feebyschoolyeargrade", feeController.getFeeBySchoolyearGrade);
+router.get("/amountoffee", feeController.amountOfFee);
+router.get("/amountoffeesavailable", feeController.amountOfFeesAvailable);
 export default router;

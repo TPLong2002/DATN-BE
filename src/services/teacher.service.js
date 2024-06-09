@@ -508,7 +508,9 @@ const countTeacherBySubject = async () => {
           db.sequelize.fn("COUNT", db.sequelize.col("SubjectUsers.id")),
           "teacher_count",
         ],
+        "grade_id",
       ],
+      where: { ishidden: 0 },
       include: [
         {
           model: db.Users,

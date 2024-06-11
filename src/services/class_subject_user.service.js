@@ -25,7 +25,7 @@ const getClassSubjectUserById = async (id) => {
 };
 const createClassSubjectUser = async (class_subject_user) => {
   try {
-    const res = await db.Class_Subject_User.create(class_subject_user);
+    const res = await db.Class_Subject_User.bulkCreate(class_subject_user);
     if (res) {
       return { status: 200, code: 0, message: "success", data: res };
     } else {

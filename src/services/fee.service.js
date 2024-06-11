@@ -74,7 +74,6 @@ const getStudentsOfFee = async (fee_id) => {
           },
           {
             model: db.Paymenthistories,
-            as: "Student_Payment",
             include: [
               {
                 model: db.Paymentstatuses,
@@ -130,6 +129,7 @@ const getStudentNotInFee = async (fee_id) => {
           model: db.Profiles,
           attributes: ["firstname", "lastname"],
         },
+        { model: db.Users, as: "User_Students", attributes: ["id"] },
       ],
       where: {
         id: {
@@ -148,13 +148,63 @@ const getStudentNotInFee = async (fee_id) => {
 };
 const addUsersToFee = async (data) => {
   try {
-    const res = await db.User_Fee.bulkCreate(data);
+    //   const res = await db.User_Fee.bulkCreate(data);
+    //   if (res) {
+    //     return { status: 200, code: 0, message: "Success", data: res };
+    //   } else {
+    //     return { status: 500, code: 1, message: "Fail", data: [] };
+    //   }
+    const transaction = await db.sequelize.transaction();
+    const fee = await db.Fees.findOne({ where: { id: data[0].fee_id } });
+    if (!fee) {
+      return { status: 500, code: 1, message: "Fee not found", data: [] };
+    }
+    console.log(data);
+    const res = await db.User_Fee.bulkCreate(
+      data.map((student) => ({
+        fee_id: student.fee_id,
+        user_id: student.user_id,
+      })),
+      { transaction }
+    );
     if (res) {
-      return { status: 200, code: 0, message: "Success", data: res };
+      // Chuẩn bị dữ liệu cho bảng PaymentHistory
+
+      const paymentHistories = data.map((item) => ({
+        fee_id: item.fee_id,
+        parent_id: item.parent_id,
+        student_id: item.user_id,
+        paymentstatus_id: 2, // 1: đã thanh toán, 2: chưa thanh toán
+        amount: fee.price, // hoặc số tiền tương ứng nếu có
+        time: "",
+        orderInfo: "",
+        orderType: "",
+        payType: "",
+        paymentmethod_id: "",
+        ishidden: 0,
+      }));
+      console.log(paymentHistories);
+      // Tạo lịch sử thanh toán
+      const paymentRes = await db.Paymenthistories.bulkCreate(
+        paymentHistories,
+        {
+          transaction,
+        }
+      );
+      // Nếu tất cả đều thành công, commit transaction
+      await transaction.commit();
+      return {
+        status: 200,
+        code: 0,
+        message: "Success",
+        data: { userFees: res, paymentHistories: paymentRes },
+      };
     } else {
+      await transaction.rollback();
       return { status: 500, code: 1, message: "Fail", data: [] };
     }
   } catch (error) {
+    console.log(error);
     return { status: 500, code: -1, message: error.message, data: [] };
   }
 };

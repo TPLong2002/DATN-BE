@@ -194,9 +194,102 @@ const getMarksByStudentId = async (
     return { status: 500, code: 1, message: error.message, data: "" };
   }
 };
+const countStudentsByParentId = async (parent_id) => {
+  try {
+    const res = await db.Parent_Student.count({
+      where: { parent_id: parent_id },
+    });
+    if (res) {
+      return { status: 200, code: 0, message: "Success", data: res };
+    } else {
+      return { status: 500, code: 1, message: "Not found", data: "" };
+    }
+  } catch (error) {
+    return { status: 500, code: 1, message: error.message, data: "" };
+  }
+};
+const countFeesByParentId = async (parent_id) => {
+  try {
+    const res = await db.Paymenthistories.findOne({
+      attributes: [
+        [db.sequelize.fn("COUNT", db.sequelize.col("id")), "total_count"],
+        [
+          db.sequelize.fn(
+            "SUM",
+            db.sequelize.literal(
+              `CASE WHEN paymentstatus_id = 1 THEN amount ELSE 0 END`
+            )
+          ),
+          "total_paid_amount",
+        ],
+        [
+          db.sequelize.fn(
+            "SUM",
+            db.sequelize.literal(
+              `CASE WHEN paymentstatus_id = 2 THEN amount ELSE 0 END`
+            )
+          ),
+          "total_unpaid_amount",
+        ],
+        [
+          db.sequelize.fn(
+            "COUNT",
+            db.sequelize.literal(
+              `CASE WHEN paymentstatus_id = 1 THEN 1 ELSE NULL END`
+            )
+          ),
+          "paid_count",
+        ],
+        [
+          db.sequelize.fn(
+            "COUNT",
+            db.sequelize.literal(
+              `CASE WHEN paymentstatus_id = 2 THEN 1 ELSE NULL END`
+            )
+          ),
+          "unpaid_count",
+        ],
+      ],
+      where: {
+        parent_id: parent_id,
+      },
+    });
+    if (res) {
+      return { status: 200, code: 0, message: "Success", data: res };
+    } else {
+      return { status: 500, code: 1, message: "Not found", data: "" };
+    }
+  } catch (error) {
+    return { status: 500, code: 1, message: error.message, data: "" };
+  }
+};
+const getFeesUnPaidByParentId = async (parent_id) => {
+  try {
+    const res = await db.Paymenthistories.findAll({
+      where: {
+        parent_id: parent_id,
+        paymentstatus_id: 2,
+      },
+      include: {
+        model: db.Fees,
+        attributes: ["id", "name", "price", "endDate"],
+      },
+    });
+    if (res) {
+      return { status: 200, code: 0, message: "Success", data: res };
+    } else {
+      return { status: 500, code: 1, message: "Not found", data: "" };
+    }
+  } catch (error) {
+    return { status: 500, code: 1, message: error.message, data: "" };
+  }
+};
 module.exports = {
   getFeesByParentId,
   getFeesOfStudent,
   getStudentsByParentId,
   getMarksByStudentId,
+  countStudentsByParentId,
+  countFeesByParentId,
+  getFeesUnPaidByParentId,
 };

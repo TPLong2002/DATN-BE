@@ -41,5 +41,6 @@ router.get(
   teacherController.getTeacherByClassSubject
 );
 router.get("/countteacherbysubject", teacherController.countTeacherBySubject);
+router.get("/teachersbysubject", teacherController.getTeachersBySubject);
 
 export default router;

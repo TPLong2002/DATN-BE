@@ -9,5 +9,9 @@ router.put("/", subjectController.updateSubject);
 router.put("/hidden", subjectController.hiddenSubject);
 router.get("/grade", subjectController.getSubjectByGradeId);
 router.get("/class", subjectController.getSubjectByClassId);
+router.get(
+  "/grade/notinclass",
+  subjectController.getSubjectByGradeIdNotInClass
+);
 
 export default router;

@@ -1,4 +1,5 @@
 import db from "../models";
+import { Op } from "sequelize";
 const getAllSubjects = async () => {
   try {
     const res = await db.Subjects.findAll();
@@ -125,6 +126,27 @@ const getSubjectByClassId = async (class_id, schoolyear_id) => {
   }
 };
 // const getMarksByStudentId = async (student_id, schoolyear_id) => {};
+const getSubjectByGradeIdNotInClass = async (grade_id, class_id) => {
+  try {
+    const res = await db.Subjects.findAll({
+      where: {
+        grade_id: grade_id,
+        id: {
+          [Op.notIn]: db.sequelize.literal(
+            `(SELECT subject_id FROM Class_Subject_User WHERE class_id = ${class_id})`
+          ),
+        },
+      },
+    });
+    if (res) {
+      return { status: 200, code: 0, message: "success", data: res };
+    } else {
+      return { status: 500, code: 1, message: "fail", data: {} };
+    }
+  } catch (error) {
+    return { status: 500, code: -1, message: error.message, data: "" };
+  }
+};
 module.exports = {
   getAllSubjects,
   updateSubject,
@@ -134,4 +156,5 @@ module.exports = {
   getSubjectById,
   getSubjectByGradeId,
   getSubjectByClassId,
+  getSubjectByGradeIdNotInClass,
 };

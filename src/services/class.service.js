@@ -249,6 +249,24 @@ const countClassesByGrade = async (grade_id) => {
     return { status: 500, code: -1, message: error.message, data: "" };
   }
 };
+const getGradeByClassId = async (class_id) => {
+  try {
+    const res = await db.Classes.findOne({
+      where: { id: class_id },
+      include: {
+        model: db.Grades,
+        attributes: ["id", "name"],
+      },
+    });
+    if (res) {
+      return { status: 200, code: 0, message: "success", data: res.Grade };
+    } else {
+      return { status: 500, code: 1, message: "fail", data: "" };
+    }
+  } catch (error) {
+    return { status: 500, code: -1, message: error.message, data: "" };
+  }
+};
 module.exports = {
   getAllClass,
   getClassById,
@@ -262,4 +280,5 @@ module.exports = {
   deleteSubjectFromClass,
   getClasses,
   countClassesByGrade,
+  getGradeByClassId,
 };

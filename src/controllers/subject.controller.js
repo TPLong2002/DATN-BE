@@ -84,6 +84,19 @@ const getSubjectByClassId = async (req, res) => {
       .send({ status: 500, code: -1, message: error.message, data: "" });
   }
 };
+const getSubjectByGradeIdNotInClass = async (req, res) => {
+  try {
+    const response = await subjectService.getSubjectByGradeIdNotInClass(
+      req.query.grade_id,
+      req.query.class_id
+    );
+    res.status(response.status).send(response);
+  } catch (error) {
+    res
+      .status(500)
+      .send({ status: 500, code: -1, message: error.message, data: "" });
+  }
+};
 module.exports = {
   getAllSubjects,
   updateSubject,
@@ -92,4 +105,5 @@ module.exports = {
   getSubjects,
   getSubjectByGradeId,
   getSubjectByClassId,
+  getSubjectByGradeIdNotInClass,
 };

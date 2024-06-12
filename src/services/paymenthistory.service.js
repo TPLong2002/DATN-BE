@@ -18,6 +18,7 @@ const getPaymentHistory = async (data) => {
         student_id: data.student_id,
         parent_id: data.parent_id,
         fee_id: data.fee_id,
+        ishidden: 0,
       },
       defaults: {
         student_id: data.student_id,
@@ -52,7 +53,6 @@ const getPaymentHistory = async (data) => {
     return { status: 500, code: -1, message: error.message, data: "" };
   }
 };
-const { Sequelize, or } = require("sequelize");
 
 const getAllAmountByYear = async (sort = "ASC") => {
   try {

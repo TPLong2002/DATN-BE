@@ -56,6 +56,7 @@ const login = async (data) => {
           name: user.Profile.firstName + " " + user.Profile.lastName,
         };
         const token = await JWTmdw.createToken(payload);
+
         return {
           status: 200,
           message: "login success",
@@ -84,6 +85,29 @@ const login = async (data) => {
 };
 const changePassword = async (data) => {
   try {
+    const check = await db.Users.findOne({
+      where: {
+        username: data.username,
+      },
+      raw: true,
+      nest: true,
+    });
+    if (!check) {
+      return {
+        status: 200,
+        message: "Username is not exist",
+        code: 3,
+        data: {},
+      };
+    }
+    if (!checkPassword(data.oldPassword, check.password)) {
+      return {
+        status: 200,
+        message: "Old password is wrong",
+        code: 3,
+        data: {},
+      };
+    }
     const user = await db.Users.update(
       {
         password: hashPassword(data.password),
@@ -103,7 +127,7 @@ const changePassword = async (data) => {
       };
     }
   } catch (error) {
-    return { status: 500, message: "Server Error", code: -1, data: {} };
+    return { status: 500, message: error.message, code: -1, data: {} };
   }
 };
 module.exports = { register, login, changePassword };

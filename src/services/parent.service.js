@@ -2,7 +2,7 @@ import db from "../models";
 const getFeesByParentId = async (parentId) => {
   try {
     const feeOfStudent = await db.Users.findOne({
-      where: { id: parentId },
+      where: { id: parentId, isdeleted: 0 },
       include: [
         {
           as: "User_Parents",
@@ -20,6 +20,7 @@ const getFeesByParentId = async (parentId) => {
                 "schoolyear_id",
               ],
               through: {
+                where: { ishidden: 0 },
                 attributes: ["id", "fee_id", "user_id"],
               },
             },
@@ -54,7 +55,6 @@ const getFeesByParentId = async (parentId) => {
       ],
       attributes: ["id", "username"],
     });
-
     if (feeOfStudent) {
       return { status: 200, code: 0, message: "Success", data: feeOfStudent };
     } else {

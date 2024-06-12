@@ -69,20 +69,30 @@ const getStudentsOfFee = async (fee_id) => {
         as: "Fee_Users",
         include: [
           {
+            model: db.Paymenthistories,
+            as: "Student_Paymenthistories",
+            where: { fee_id: fee_id },
+            include: [
+              {
+                model: db.Paymentstatuses,
+                attributes: ["code"],
+              },
+            ],
+          },
+          {
             model: db.Profiles,
             attributes: ["firstname", "lastname"],
           },
           {
-            model: db.Paymenthistories,
-            include: [
-              {
-                model: db.Paymentstatuses,
-                attributes: ["description"],
-              },
-            ],
+            model: db.Users,
+            as: "User_Students",
+            include: {
+              model: db.Profiles,
+              attributes: ["id", "firstname", "lastname"],
+            },
           },
         ],
-        through: { where: { ishidden: 0 }, attributes: [] },
+        through: { attributes: ["ishidden"] },
         attributes: ["id", "username"],
       },
     ],
@@ -95,17 +105,44 @@ const getStudentsOfFee = async (fee_id) => {
 };
 const deleteUsersOfFee = async (data) => {
   try {
-    const res = await db.User_Fee.update(
-      { ishidden: 1 },
-      {
-        where: { fee_id: data.fee_id, user_id: data.user_id },
+    const result = await db.sequelize.transaction(async (t) => {
+      // Cập nhật bảng User_Fee
+      const userFeeUpdateResult = await db.User_Fee.update(
+        { ishidden: data.ishidden },
+        {
+          where: { fee_id: data.fee_id, user_id: data.user_id },
+          transaction: t,
+        }
+      );
+
+      // Kiểm tra nếu cập nhật thành công
+      if (userFeeUpdateResult[0] === 0) {
+        throw new Error("User_Fee update failed");
       }
-    );
-    if (res) {
-      return { status: 200, code: 0, message: "success", data: res };
-    } else {
-      return { status: 500, code: 1, message: "fail", data: "" };
-    }
+
+      // Cập nhật bảng Payment_History
+      const paymentHistoryUpdateResult = await db.Paymenthistories.update(
+        { ishidden: data.ishidden },
+        {
+          where: { student_id: data.user_id, fee_id: data.fee_id },
+          transaction: t,
+        }
+      );
+
+      // Kiểm tra nếu cập nhật thành công
+      if (paymentHistoryUpdateResult[0] === 0) {
+        throw new Error("Payment_History update failed");
+      }
+
+      return {
+        status: 200,
+        code: 0,
+        message: "success",
+        data: { userFeeUpdateResult, paymentHistoryUpdateResult },
+      };
+    });
+
+    return result;
   } catch (error) {
     return { status: 500, code: -1, message: error.message, data: "" };
   }

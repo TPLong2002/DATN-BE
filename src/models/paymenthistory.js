@@ -13,9 +13,11 @@ module.exports = (sequelize, DataTypes) => {
       });
       Paymenthistories.belongsTo(models.Users, {
         foreignKey: "student_id",
+        as: "Student_Paymenthistories",
       });
       Paymenthistories.belongsTo(models.Users, {
         foreignKey: "parent_id",
+        as: "Parent_Paymenthistories",
       });
       Paymenthistories.belongsTo(models.Paymentmethods, {
         foreignKey: "paymentmethod_id",

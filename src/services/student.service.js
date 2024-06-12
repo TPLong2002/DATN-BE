@@ -211,11 +211,66 @@ const countStudentBySchoolyear = async () => {
     return { status: 500, code: -1, message: error.message, data: "" };
   }
 };
-
+const getFeesByStudentId = async (student_id) => {
+  const feeOfStudent = await db.Users.findOne({
+    where: { id: student_id, isdeleted: 0 },
+    include: [
+      {
+        as: "User_Fees",
+        model: db.Fees,
+        attributes: [
+          "id",
+          "name",
+          "price",
+          "startDate",
+          "endDate",
+          "schoolyear_id",
+        ],
+        through: {
+          where: { ishidden: 0 },
+          attributes: ["id", "fee_id", "user_id"],
+        },
+      },
+      {
+        model: db.Profiles,
+        attributes: ["id", "firstName", "lastName"],
+      },
+      {
+        model: db.Classes,
+        attributes: ["id", "name"],
+        as: "Student_Classes",
+        through: {
+          attributes: ["id", "class_id", "user_id"],
+        },
+        include: [
+          {
+            model: db.Schoolyears,
+            attributes: ["id", "name"],
+          },
+        ],
+      },
+      {
+        as: "User_Students",
+        model: db.Users,
+        attributes: ["id"],
+        include: {
+          model: db.Profiles,
+          attributes: ["id", "firstName", "lastName"],
+        },
+      },
+    ],
+  });
+  if (feeOfStudent) {
+    return { status: 200, code: 0, message: "Success", data: feeOfStudent };
+  } else {
+    return { status: 500, code: 1, message: "Not found", data: "" };
+  }
+};
 module.exports = {
   getAllAssignmentsByStudentId,
   getStudentBySchoolyear,
   getAssignmentById,
   countStudentByGrade,
   countStudentBySchoolyear,
+  getFeesByStudentId,
 };

@@ -1,4 +1,6 @@
 import db from "../models";
+import bcrypt from "bcryptjs";
+const salt = bcrypt.genSaltSync(10);
 const getProfileByUserId = async (userId) => {
   try {
     const [profile, created] = await db.Profiles.findOrCreate({
@@ -50,16 +52,22 @@ const getProfileByUserId = async (userId) => {
     return { status: 500, code: -1, message: error.message, data: "" };
   }
 };
+const hashPassword = (password) => {
+  let hashPassword = bcrypt.hashSync(password, salt);
+  return hashPassword;
+};
 const updateProfileByUserId = async (data) => {
   const t = await db.sequelize.transaction();
   try {
     const { email, id, ...defaultdata } = data;
 
     // Cập nhật mật khẩu trong bảng user
-    const updatedUser = await db.Users.update(
-      { password: data.password }, // Thay đổi password thành giá trị mới
-      { where: { id: data.user_id }, transaction: t }
-    );
+    if (data.password) {
+      const updatedUser = await db.Users.update(
+        { password: hashPassword(data.password) }, // Thay đổi password thành giá trị mới
+        { where: { id: data.user_id }, transaction: t }
+      );
+    }
 
     // Cập nhật thông tin trong bảng profiles
     const [profile, created] = await db.Profiles.findOrCreate({
@@ -97,7 +105,7 @@ const updateProfileByUserId = async (data) => {
       status: 200,
       code: 0,
       message: "success",
-      data: { user: updatedUser, profile: profile },
+      data: profile,
     };
   } catch (error) {
     await t.rollback(); // Rollback giao dịch nếu có lỗi

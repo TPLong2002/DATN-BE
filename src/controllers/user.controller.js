@@ -1,4 +1,5 @@
 import userServices from "../services/user.service";
+
 const getAllUsers = async (req, res) => {
   try {
     var response = await userServices.getAllUsers();
@@ -19,7 +20,8 @@ const getUsers = async (req, res) => {
         req.query.page,
         req.query.group_id,
         req.query.isdeleted,
-        req.query.search
+        req.query.search,
+        req.query.schoolyear_id
       );
       return res.status(response.status).json({
         code: response.code,
@@ -31,7 +33,8 @@ const getUsers = async (req, res) => {
         req.query.limit,
         req.query.page,
         req.query.isdeleted,
-        req.query.search
+        req.query.search,
+        req.query.schoolyear_id
       );
       return res.status(response.status).json({
         code: response.code,
@@ -151,6 +154,7 @@ const countUsersOfGroup = async (req, res) => {
     return res.status(500).json({ error: err.message });
   }
 };
+
 module.exports = {
   getAllUsers,
   createUser,

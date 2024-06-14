@@ -1,4 +1,5 @@
 import db from "../models";
+import { Op } from "sequelize";
 const getFeesByParentId = async (parentId) => {
   try {
     const feeOfStudent = await db.Users.findOne({
@@ -284,6 +285,34 @@ const getFeesUnPaidByParentId = async (parent_id) => {
     return { status: 500, code: 1, message: error.message, data: "" };
   }
 };
+const getParentsBySchoolyearId = async (schoolyear_id) => {
+  try {
+    const students = await db.Users.findAll({
+      where: {
+        schoolyear_id: schoolyear_id,
+        isdeleted: 0,
+        group_id: {
+          [Op.eq]: db.sequelize.literal(
+            '(SELECT id FROM `Groups` WHERE name = "parent")'
+          ),
+        },
+      },
+      include: [
+        {
+          model: db.Profiles,
+          attributes: ["firstName", "lastName"],
+        },
+      ],
+    });
+    if (students) {
+      return { status: 200, code: 0, message: "Success", data: students };
+    } else {
+      return { status: 500, code: 1, message: "Not found", data: [] };
+    }
+  } catch (error) {
+    return { status: 500, code: 1, message: error.message, data: [] };
+  }
+};
 module.exports = {
   getFeesByParentId,
   getFeesOfStudent,
@@ -292,4 +321,5 @@ module.exports = {
   countStudentsByParentId,
   countFeesByParentId,
   getFeesUnPaidByParentId,
+  getParentsBySchoolyearId,
 };

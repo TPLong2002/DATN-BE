@@ -13,6 +13,21 @@ const hashPassword = (password) => {
 const getAllUsers = async () => {
   try {
     const users = await db.Users.findAll({
+      include: [
+        {
+          model: db.Profiles,
+          attributes: ["firstName", "lastName"],
+        },
+      ],
+      attributes: [
+        "id",
+        "username",
+        "email",
+        "group_id",
+        "isdeleted",
+        "schoolyear_id",
+        "islocked",
+      ],
       raw: true,
       nest: true,
     });
@@ -28,7 +43,7 @@ const getAllUsers = async () => {
     };
   }
 };
-const getUsers = async (limit, page, isdeleted, search) => {
+const getUsers = async (limit, page, isdeleted, search, schoolyear_id) => {
   if (!limit) limit = 10;
   if (!page) page = 1;
 
@@ -51,13 +66,30 @@ const getUsers = async (limit, page, isdeleted, search) => {
           ],
         }
       : {};
-
+    const searchCondition1 = schoolyear_id
+      ? { schoolyear_id: schoolyear_id }
+      : {};
     const { count, rows } = await db.Users.findAndCountAll({
       where: {
         isdeleted: isdeleted,
+        ...searchCondition1,
         ...searchCondition,
       },
-      attributes: ["id", "username", "email", "group_id", "isdeleted"],
+      include: [
+        {
+          model: db.Profiles,
+          attributes: ["firstName", "lastName"],
+        },
+      ],
+      attributes: [
+        "id",
+        "username",
+        "email",
+        "group_id",
+        "isdeleted",
+        "schoolyear_id",
+        "islocked",
+      ],
       limit: +limit,
       offset: +offset,
       raw: true,
@@ -85,6 +117,21 @@ const getUsersDelete = async () => {
   try {
     const users = await db.Users.findAll({
       where: { isdeleted: 1 },
+      include: [
+        {
+          model: db.Profiles,
+          attributes: ["firstName", "lastName"],
+        },
+      ],
+      attributes: [
+        "id",
+        "username",
+        "email",
+        "group_id",
+        "isdeleted",
+        "schoolyear_id",
+        "islocked",
+      ],
       raw: true,
       nest: true,
     });
@@ -104,6 +151,21 @@ const getUsersLock = async () => {
   try {
     const users = await db.Users.findAll({
       where: { islocked: 1 },
+      include: [
+        {
+          model: db.Profiles,
+          attributes: ["firstName", "lastName"],
+        },
+      ],
+      attributes: [
+        "id",
+        "username",
+        "email",
+        "group_id",
+        "isdeleted",
+        "schoolyear_id",
+        "islocked",
+      ],
       raw: true,
       nest: true,
     });
@@ -150,6 +212,7 @@ const createUser = async (data) => {
           email: item.email,
           group_id: item.group_id,
           password: hashPassword(item.password),
+          schoolyear_id: item.schoolyear_id,
         })),
         { transaction: t }
       );
@@ -279,7 +342,14 @@ const unlockUser = async (data) => {
     return { status: 500, code: -1, message: error.message, data: "" };
   }
 };
-const getUsersByGroupId = async (limit, page, group_id, isdeleted, search) => {
+const getUsersByGroupId = async (
+  limit,
+  page,
+  group_id,
+  isdeleted,
+  search,
+  schoolyear_id
+) => {
   if (!limit) limit = 10;
   if (!page) page = 1;
 
@@ -301,9 +371,31 @@ const getUsersByGroupId = async (limit, page, group_id, isdeleted, search) => {
           ],
         }
       : {};
-
+    const searchCondition1 = schoolyear_id
+      ? { schoolyear_id: schoolyear_id }
+      : {};
     const { count, rows } = await db.Users.findAndCountAll({
-      where: { group_id: group_id, isdeleted: isdeleted, ...searchCondition },
+      where: {
+        group_id: group_id,
+        isdeleted: isdeleted,
+        ...searchCondition1,
+        ...searchCondition,
+      },
+      include: [
+        {
+          model: db.Profiles,
+          attributes: ["firstName", "lastName"],
+        },
+      ],
+      attributes: [
+        "id",
+        "username",
+        "email",
+        "group_id",
+        "isdeleted",
+        "schoolyear_id",
+        "islocked",
+      ],
       limit: +limit,
       offset: +offset,
       raw: true,

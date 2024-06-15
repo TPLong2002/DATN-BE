@@ -325,6 +325,7 @@ const getStudentAndParents = async (
           model: db.Users,
           as: "User_Students",
           attributes: ["id", "username", "email", "schoolyear_id"],
+          through: { attributes: ["id"] },
           include: [
             {
               model: db.Profiles,
@@ -359,6 +360,11 @@ const getStudentBySchoolyearId = async (schoolyear_id) => {
         group_id: {
           [Op.eq]: db.sequelize.literal(
             '(SELECT id FROM `Groups` WHERE name = "student")'
+          ),
+        },
+        id: {
+          [Op.notIn]: db.sequelize.literal(
+            "(SELECT student_id FROM `Parent_Student`)"
           ),
         },
       },

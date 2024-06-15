@@ -14,4 +14,5 @@ router.get(
   studentController.getStudentBySchoolyearId
 );
 router.post("/addrelation", studentController.addRetation);
+router.delete("/deleterelation", studentController.deleteRetation);
 export default router;

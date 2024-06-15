@@ -4,7 +4,9 @@ const getNewsBySort = async (
   page,
   schoolyear_id,
   semester_id,
-  category_id
+  category_id,
+  user_id,
+  role
 ) => {
   if (!limit) limit = 10;
   if (!page) page = 1;
@@ -13,8 +15,9 @@ const getNewsBySort = async (
     const condition1 = semester_id ? { semester_id: semester_id } : {};
     const condition2 = schoolyear_id ? { schoolyear_id: schoolyear_id } : {};
     const condition3 = category_id ? { category_id: category_id } : {};
+    const condition4 = user_id && role != "admin" ? { user_id: user_id } : {};
     const { count, rows } = await db.News.findAndCountAll({
-      where: { ...condition1, ...condition2, ...condition3 },
+      where: { ...condition1, ...condition2, ...condition3, ...condition4 },
       include: [
         {
           model: db.Users,
@@ -62,7 +65,7 @@ const createNews = async (news) => {
     return { status: 500, code: -1, message: error.message, data: "" };
   }
 };
-const getNewsById = async (id) => {
+const getNewsById = async (id, user_id, role) => {
   try {
     const news = await db.News.findOne({
       where: { id: id },
@@ -84,8 +87,12 @@ const getNewsById = async (id) => {
           attributes: ["description"],
         },
       ],
+      nest: true,
+      raw: true,
     });
-    return { status: 200, code: 0, message: "Success", data: news };
+    if (news.user_id == user_id || role == "admin")
+      return { status: 200, code: 0, message: "Success", data: news };
+    return { status: 403, code: -1, message: "Forbidden", data: "" };
   } catch (error) {
     return { status: 500, code: -1, message: error.message, data: "" };
   }

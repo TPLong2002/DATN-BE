@@ -4,7 +4,8 @@ const getMarksByStudentId = async (req, res) => {
     const response = await markService.getMarksByStudentId(
       req.query.student_id,
       req.query.schoolyear_id,
-      req.query.semester_id
+      req.query.semester_id,
+      req.query.subject_id
     );
     return res.status(response.status).json({
       code: response.code,

@@ -1,7 +1,10 @@
 import db from "../models";
 
 const getRoles = async () => {
-  const res = await db.Roles.findAll();
+  const res = await db.Roles.findAll({
+    where: { ishidden: 0 },
+    order: [["URL", "ASC"]],
+  });
   if (res) {
     return { status: 200, code: 0, message: "success", data: res };
   } else {
@@ -44,7 +47,10 @@ const updateRoles = async (data) => {
   }
 };
 const delRoles = async (id) => {
-  const res = await db.Roles.destroy({ where: { id: id } });
+  const res = await db.Roles.update({
+    ishidden: 1,
+    where: { id: id },
+  });
   if (res) {
     return { status: 200, code: 0, message: "success", data: res };
   } else {

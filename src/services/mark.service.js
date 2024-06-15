@@ -1,6 +1,12 @@
 import db from "../models";
 import { Op } from "sequelize";
-const getMarksByStudentId = async (student_id, schoolyear_id, semester_id) => {
+const getMarksByStudentId = async (
+  student_id,
+  schoolyear_id,
+  semester_id,
+  subject_id
+) => {
+  console.log(student_id, schoolyear_id, semester_id);
   try {
     const res = await db.Users.findOne({
       where: {
@@ -9,7 +15,11 @@ const getMarksByStudentId = async (student_id, schoolyear_id, semester_id) => {
       include: [
         {
           model: db.Marks,
-          where: { schoolyear_id: schoolyear_id, semester_id: semester_id },
+          where: {
+            schoolyear_id: schoolyear_id,
+            semester_id: semester_id,
+            subject_id: subject_id,
+          },
           include: [
             {
               model: db.Subjects,
@@ -20,6 +30,9 @@ const getMarksByStudentId = async (student_id, schoolyear_id, semester_id) => {
               attributes: ["name"],
             },
           ],
+        },
+        {
+          model: db.Profiles,
         },
       ],
     });

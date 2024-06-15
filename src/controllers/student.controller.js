@@ -92,6 +92,18 @@ const addRetation = async (req, res) => {
     return res.status(500).json({ error: error.message });
   }
 };
+const deleteRetation = async (req, res) => {
+  try {
+    const response = await parent_studentServices.deleteRetation(req.query.id);
+    return res.status(response.status).json({
+      code: response.code,
+      message: response.message,
+      data: response.data,
+    });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
 module.exports = {
   getAllAssignmentsByStudentId,
   getStudentBySchoolyear,
@@ -102,4 +114,5 @@ module.exports = {
   getStudentAndParents,
   getStudentBySchoolyearId,
   addRetation,
+  deleteRetation,
 };

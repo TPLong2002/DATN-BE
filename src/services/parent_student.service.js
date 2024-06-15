@@ -37,4 +37,15 @@ const addRetation = async (data) => {
     return { status: 500, code: 1, message: error.message, data: [] };
   }
 };
-module.exports = { addRetation };
+const deleteRetation = async (id) => {
+  try {
+    const result = await db.Parent_Student.destroy({
+      where: { id },
+    });
+
+    return { status: 200, code: 0, message: "Success", data: result };
+  } catch (error) {
+    return { status: 500, code: 1, message: error.message, data: [] };
+  }
+};
+module.exports = { addRetation, deleteRetation };

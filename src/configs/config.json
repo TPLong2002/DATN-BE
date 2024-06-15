@@ -21,13 +21,14 @@
     }
   },
   "production": {
-    "username": "root",
-    "password": null,
-    "database": "database_production",
-    "host": "127.0.0.1",
+    "username": "admin",
+    "password": "Long2002",
+    "database": "datn_db",
+    "host": "nodejs.c7qcq2qmy4ze.ap-southeast-1.rds.amazonaws.com",
     "dialect": "mysql",
     "define": {
       "freezeTableName": true
-    }
+    },
+    "timezone": "+07:00"
   }
 }

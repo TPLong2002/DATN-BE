@@ -6,19 +6,21 @@ const getMarksByStudentId = async (
   semester_id,
   subject_id
 ) => {
-  console.log(student_id, schoolyear_id, semester_id);
+  console.log(student_id, schoolyear_id, semester_id, subject_id);
+  const condition1 = subject_id ? { subject_id: +subject_id } : {};
   try {
     const res = await db.Users.findOne({
       where: {
         id: student_id,
       },
+
       include: [
         {
           model: db.Marks,
           where: {
             schoolyear_id: schoolyear_id,
             semester_id: semester_id,
-            subject_id: subject_id,
+            ...condition1,
           },
           include: [
             {

@@ -39,5 +39,27 @@ const getRolesByGroup = async (req, res) => {
     return res.status(500).json({ message: error.message, code: -1, data: "" });
   }
 };
-
-module.exports = { getRoles, addRoles, delRoles, getRolesByGroup };
+const getRoleById = async (req, res) => {
+  try {
+    const data = await roleService.getRoleById(req.query.id);
+    return res
+      .status(data.status)
+      .json({ code: data.code, message: data.message, data: data.data });
+  } catch (error) {}
+};
+const updateRole = async (req, res) => {
+  try {
+    const data = await roleService.updateRole(req.body);
+    return res
+      .status(data.status)
+      .json({ code: data.code, message: data.message, data: data.data });
+  } catch (error) {}
+};
+module.exports = {
+  getRoles,
+  addRoles,
+  delRoles,
+  getRolesByGroup,
+  getRoleById,
+  updateRole,
+};

@@ -20,6 +20,7 @@ const create = async (data) => {
     var redirectUrl = process.env.redirectUrl;
     var ipnUrl = process.env.ipnUrl;
     var requestType = "payWithMethod";
+    // var requestType = "captureWallet";
     var amount = fee.price;
     var orderId = partnerCode + new Date().getTime();
     var requestId = orderId;

@@ -23,6 +23,9 @@ module.exports = (sequelize, DataTypes) => {
       Schoolyears.hasMany(models.News, {
         foreignKey: "schoolyear_id",
       });
+      Schoolyears.hasMany(models.Assignments, {
+        foreignKey: "schoolyear_id",
+      });
     }
   }
   Schoolyears.init(

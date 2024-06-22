@@ -95,7 +95,9 @@ const getAssignmentByTeacherId = async (req, res) => {
     const response = await teacherService.getAssignmentByTeacherId(
       req.query.teacher_id,
       req.query.limit,
-      req.query.page
+      req.query.page,
+      req.query.schoolyear_id,
+      req.query.semester_id
     );
     return res.status(response.status).send(response);
   } catch (error) {

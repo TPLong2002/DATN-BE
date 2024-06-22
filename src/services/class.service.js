@@ -8,7 +8,7 @@ const getAllClass = async (limit, page, grade_id, schoolyear_id) => {
     const condition1 = grade_id ? { grade_id: grade_id } : {};
     const condition2 = schoolyear_id ? { schoolyear_id: schoolyear_id } : {};
     const { count, rows } = await db.Classes.findAndCountAll({
-      where: { ...condition1, ...condition2 },
+      where: { ...condition1, ...condition2, ishidden: 0 },
       include: [
         {
           model: db.Users,
@@ -66,10 +66,18 @@ const getClasses = async () => {
 };
 const getClassById = async (id) => {
   try {
-    const res = await db.Classes.findAll({
+    const res = await db.Classes.findOne({
       where: { id: id },
       include: [
-        { model: db.Users, as: "GVCN", attributes: ["username"] },
+        {
+          model: db.Users,
+          as: "GVCN",
+          attributes: ["id", "username"],
+          include: {
+            model: db.Profiles,
+            attributes: ["firstName", "lastName"],
+          },
+        },
         {
           model: db.Users,
           as: "Class_Students",

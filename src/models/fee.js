@@ -18,6 +18,7 @@ module.exports = (sequelize, DataTypes) => {
       });
       Fees.belongsTo(models.Schoolyears, { foreignKey: "schoolyear_id" });
       Fees.belongsTo(models.Grades, { foreignKey: "grade_id" });
+      Fees.belongsTo(models.Semesters, { foreignKey: "semester_id" });
     }
   }
   Fees.init(
@@ -29,6 +30,7 @@ module.exports = (sequelize, DataTypes) => {
       ishidden: DataTypes.INTEGER,
       schoolyear_id: DataTypes.INTEGER,
       grade_id: DataTypes.INTEGER,
+      semester_id: DataTypes.INTEGER,
     },
     {
       sequelize,

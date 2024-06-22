@@ -15,6 +15,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "assignment_id",
       });
       Assignments.belongsTo(models.Subjects, { foreignKey: "subject_id" });
+      Assignments.belongsTo(models.Schoolyears, {
+        foreignKey: "schoolyear_id",
+      });
+      Assignments.belongsTo(models.Semesters, { foreignKey: "semester_id" });
     }
   }
   Assignments.init(
@@ -27,6 +31,8 @@ module.exports = (sequelize, DataTypes) => {
       deadline: DataTypes.DATE,
       image: DataTypes.STRING,
       ishidden: DataTypes.INTEGER,
+      schoolyear_id: DataTypes.INTEGER,
+      semester_id: DataTypes.INTEGER,
     },
     {
       sequelize,

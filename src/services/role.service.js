@@ -37,9 +37,11 @@ const addRoles = async (data) => {
     return { status: 500, code: -1, message: "error", data: "" };
   }
 };
-const updateRoles = async (data) => {
+const updateRole = async (data) => {
   console.log(data);
-  const res = await db.Roles.bulkCreate(data);
+  const res = await db.Roles.update(data, {
+    where: { id: data.id },
+  });
   if (res) {
     return { status: 200, code: 0, message: "success", data: res };
   } else {
@@ -75,5 +77,27 @@ const getRolesByGroup = async (id) => {
     return { status: 500, code: -1, message: "error", data: "" };
   }
 };
+const getRoleById = async (id) => {
+  try {
+    const res = await db.Roles.findOne({
+      where: { id: id },
+      attributes: ["id", "URL", "description"],
+    });
+    if (res) {
+      return { status: 200, code: 0, message: "success", data: res };
+    } else {
+      return { status: 500, code: -1, message: "error", data: "" };
+    }
+  } catch (error) {
+    return { status: 500, code: -1, message: "error", data: "" };
+  }
+};
 
-module.exports = { getRoles, addRoles, updateRoles, delRoles, getRolesByGroup };
+module.exports = {
+  getRoles,
+  addRoles,
+  updateRole,
+  delRoles,
+  getRolesByGroup,
+  getRoleById,
+};

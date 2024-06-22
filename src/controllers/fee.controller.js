@@ -5,7 +5,13 @@ const getAllFee = async (req, res) => {
       const fees = await feeService.getFeeById(req.query.id);
       res.status(200).json(fees);
     } else {
-      const fees = await feeService.getAllFee(req.query.limit, req.query.page);
+      const fees = await feeService.getAllFee(
+        req.query.limit,
+        req.query.page,
+        req.query.schoolyear_id,
+        req.query.semester_id,
+        req.query.grade_id
+      );
       res.status(200).json(fees);
     }
   } catch (error) {

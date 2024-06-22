@@ -7,7 +7,9 @@ const getAssignment = async (req, res) => {
     } else {
       const response = await assignmentService.getAssignments(
         req.query.limit,
-        req.query.page
+        req.query.page,
+        req.query.schoolyear_id,
+        req.query.semester_id
       );
       return res.status(response.status).json(response);
     }

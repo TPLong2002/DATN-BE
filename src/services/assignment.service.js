@@ -1,12 +1,15 @@
 import db from "../models";
 import { Op, where } from "sequelize";
 
-const getAssignments = async (limit, page) => {
+const getAssignments = async (limit, page, schoolyear_id, semester_id) => {
   if (!limit) limit = 10;
   if (!page) page = 1;
   const offset = (page - 1) * limit;
   try {
+    const condition1 = schoolyear_id ? { schoolyear_id: schoolyear_id } : {};
+    const condition2 = semester_id ? { semester_id: semester_id } : {};
     const { rows, count } = await db.Assignments.findAndCountAll({
+      where: { ...condition1, ...condition2 },
       include: [
         {
           model: db.Classes,

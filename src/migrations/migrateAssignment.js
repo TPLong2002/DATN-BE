@@ -21,6 +21,12 @@ module.exports = {
       subject_id: {
         type: Sequelize.INTEGER,
       },
+      schoolyear_id: {
+        type: Sequelize.INTEGER,
+      },
+      semester_id: {
+        type: Sequelize.INTEGER,
+      },
       image: {
         type: Sequelize.STRING,
       },

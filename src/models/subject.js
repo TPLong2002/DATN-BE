@@ -32,6 +32,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       name: DataTypes.STRING,
       ishidden: DataTypes.INTEGER,
+      grade_id: DataTypes.INTEGER,
     },
     {
       sequelize,

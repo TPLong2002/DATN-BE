@@ -1,14 +1,31 @@
 import db from "../models";
 import { Op, where } from "sequelize";
 
-const getAllFee = async (limit, page) => {
-  if (!page) page = 1;
-  if (!limit) limit = 10;
+const getAllFee = async (
+  limit = 1,
+  page = 10,
+  schoolyear_id,
+  semester_id,
+  grade_id
+) => {
   const offset = (page - 1) * limit;
   try {
+    const condition1 = schoolyear_id ? { schoolyear_id: schoolyear_id } : {};
+    const condition2 = semester_id ? { semester_id: semester_id } : {};
+    const condition3 = grade_id ? { grade_id: grade_id } : {};
     const { count, rows } = await db.Fees.findAndCountAll({
+      where: { ...condition2, ...condition1, ...condition3 },
       offset: +offset,
       limit: +limit,
+      include: [
+        {
+          model: db.Schoolyears,
+          attributes: [], // Không cần lấy thuộc tính của schoolyears trong kết quả chính
+        },
+      ],
+      order: [
+        [db.Schoolyears, "name", "DESC"], // Sắp xếp theo name của schoolyears tăng dần
+      ],
     });
     if (rows && count) {
       return {
@@ -18,12 +35,13 @@ const getAllFee = async (limit, page) => {
         data: { rows, count },
       };
     } else {
-      return { status: 500, code: 1, message: "fail", data: {} };
+      return { status: 200, code: 0, message: "Fee not found", data: {} };
     }
   } catch (error) {
     return { status: 500, code: -1, message: error.message, data: {} };
   }
 };
+
 const getFeeById = async (id) => {
   try {
     const res = await db.Fees.findOne({ where: { id: id } });

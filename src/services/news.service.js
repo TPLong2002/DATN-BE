@@ -66,6 +66,7 @@ const createNews = async (news) => {
   }
 };
 const getNewsById = async (id, user_id, role) => {
+  console.log(user_id, role);
   try {
     const news = await db.News.findOne({
       where: { id: id },
@@ -90,7 +91,11 @@ const getNewsById = async (id, user_id, role) => {
       nest: true,
       raw: true,
     });
-    if (news.user_id == user_id || role == "admin")
+    if (
+      news.user_id == user_id ||
+      role == "admin" ||
+      (user_id == undefined && role == undefined)
+    )
       return { status: 200, code: 0, message: "Success", data: news };
     return { status: 403, code: -1, message: "Forbidden", data: "" };
   } catch (error) {

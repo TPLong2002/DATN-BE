@@ -108,16 +108,21 @@ const getTeacherWithoutGVCN = async () => {
     const res = await db.Users.findAll({
       where: {
         "$GVCN.GVCN_id$": null, // Lọc ra các giáo viên không có GVCN_id
-        "$Group.name$": "teacher", // Lọc ra các giáo viên có vai trò là 'teacher'
       },
       include: [
         {
           model: db.Groups,
+          as: "Group",
+          where: { name: "teacher" },
         },
         {
           model: db.Classes,
           as: "GVCN",
           // required: false, // Đảm bảo rằng việc kết nối với lớp là tùy chọn
+        },
+        {
+          model: db.Profiles,
+          attributes: ["firstName", "lastName"],
         },
       ],
     });
@@ -248,14 +253,21 @@ const getClassOfSubjectIsTeaching = async (teacher_id, subject_id) => {
     return { status: 500, code: 1, message: error.message, data: "" };
   }
 };
-const getAssignmentByTeacherId = async (teacher_id, limit, page) => {
+const getAssignmentByTeacherId = async (
+  teacher_id,
+  limit,
+  page,
+  schoolyear_id,
+  semester_id
+) => {
   if (!limit) limit = 10;
   if (!page) page = 1;
   const offset = (page - 1) * limit;
-  console.log(teacher_id, limit, offset);
   try {
+    const condition1 = schoolyear_id ? { schoolyear_id: schoolyear_id } : {};
+    const condition2 = semester_id ? { semester_id: semester_id } : {};
     const { rows, count } = await db.Assignments.findAndCountAll({
-      where: { teacher_id: teacher_id },
+      where: { teacher_id: teacher_id, ...condition1, ...condition2 },
       include: [
         {
           model: db.Classes,

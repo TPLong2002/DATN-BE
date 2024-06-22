@@ -12,6 +12,9 @@ module.exports = {
       name: {
         type: Sequelize.STRING,
       },
+      grade_id: {
+        type: Sequelize.INTEGER,
+      },
       ishidden: {
         defaultValue: 0,
         type: Sequelize.INTEGER,

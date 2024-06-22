@@ -18,6 +18,15 @@ module.exports = {
       content: {
         type: Sequelize.STRING,
       },
+      thumbnail: {
+        type: Sequelize.STRING,
+      },
+      category_id: {
+        type: Sequelize.INTEGER,
+      },
+      schoolyear_id: {
+        type: Sequelize.INTEGER,
+      },
       ishidden: {
         defaultValue: 0,
         type: Sequelize.INTEGER,

@@ -19,7 +19,7 @@ const create = async (data) => {
     var partnerCode = "MOMO";
     var redirectUrl = process.env.redirectUrl;
     var ipnUrl = process.env.ipnUrl;
-    var requestType = "payWithMethod";
+    var requestType = process.env.requestType;
     // var requestType = "captureWallet";
     var amount = fee.price;
     var orderId = partnerCode + new Date().getTime();

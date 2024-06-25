@@ -1,5 +1,7 @@
 import db from "../models";
 import bcrypt from "bcryptjs";
+import generator from "generate-password";
+import sendEmail from "./email.service";
 
 import JWTmdw from "../middleware/JWTmdw";
 
@@ -130,4 +132,72 @@ const changePassword = async (data) => {
     return { status: 500, message: error.message, code: -1, data: {} };
   }
 };
-module.exports = { register, login, changePassword };
+const forgotPassword = async (data) => {
+  try {
+    const result = await db.sequelize.transaction(async (t) => {
+      console.log(data);
+
+      const user = await db.Users.findOne({
+        where: {
+          email: data.email,
+        },
+        raw: true,
+        nest: true,
+        transaction: t,
+      });
+
+      if (!user) {
+        return {
+          status: 200,
+          message: "Email không tồn tại trong hệ thống",
+          code: 3,
+          data: {},
+        };
+      }
+
+      const passcode = generator.generate({
+        length: 10,
+        numbers: true,
+      });
+
+      const hashedPassword = hashPassword(passcode);
+
+      const [updateCount] = await db.Users.update(
+        {
+          password: hashedPassword,
+        },
+        {
+          where: {
+            email: data.email,
+          },
+          transaction: t,
+        }
+      );
+
+      if (updateCount === 0) {
+        throw new Error("Failed to update password");
+      }
+
+      const subject = "Cấp lại mật khẩu";
+      const text = `Mật khẩu mới là: ${passcode}`;
+      const emailSent = await sendEmail(data.email, subject, text);
+
+      if (!emailSent) {
+        throw new Error("Failed to send email");
+      }
+
+      return {
+        status: 200,
+        message: "Cấp lại mât khẩu thành công, vui lòng kiểm tra email",
+        code: 0,
+        data: {},
+      };
+    });
+
+    return result;
+  } catch (error) {
+    console.error(error);
+    return { status: 500, message: error.message, code: -1, data: {} };
+  }
+};
+module.exports = { register, login, changePassword, forgotPassword };

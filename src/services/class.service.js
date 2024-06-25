@@ -246,7 +246,7 @@ const deleteSubjectFromClass = async (data) => {
 const countClassesByGrade = async (grade_id) => {
   try {
     const res = await db.Classes.count({
-      where: { grade_id: grade_id },
+      where: { grade_id: grade_id, ishidden: 0 },
     });
     if (res) {
       return { status: 200, code: 0, message: "success", data: res };

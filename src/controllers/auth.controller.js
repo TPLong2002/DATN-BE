@@ -74,6 +74,19 @@ const getUserAccount = async (req, res) => {
     data: { isAuth: true, access_token: req.token, ...req.user },
   });
 };
+const forgotPassword = async (req, res) => {
+  try {
+    if (!req.body.email) {
+      return res.status(200).json({ message: "missing value", code: 2 });
+    }
+    let data = await authService.forgotPassword(req.body);
+    return res
+      .status(data.status)
+      .json({ message: data.message, code: data.code, data: {} });
+  } catch (error) {
+    return res.status(500).json({ message: error.message, code: -1 });
+  }
+};
 module.exports = {
   test,
   register,
@@ -81,4 +94,5 @@ module.exports = {
   logout,
   changePassword,
   getUserAccount,
+  forgotPassword,
 };

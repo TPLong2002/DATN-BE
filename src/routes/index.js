@@ -37,6 +37,7 @@ const initApiRoutes = (app) => {
   router.post("/login", authController.Login);
   router.get("/logout", authController.logout);
   router.post("/changePassword", authController.changePassword);
+  router.post("/forgotPassword", authController.forgotPassword);
   router.get("/account", authController.getUserAccount);
   router.use("/user", userRoutes);
   router.use("/profile", profileRoutes);

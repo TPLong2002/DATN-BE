@@ -62,9 +62,9 @@ const updateProfileByUserId = async (data) => {
     const { email, id, ...defaultdata } = data;
 
     // Cập nhật mật khẩu trong bảng user
-    if (data.password) {
+    if (data.newPassword) {
       const updatedUser = await db.Users.update(
-        { password: hashPassword(data.password) }, // Thay đổi password thành giá trị mới
+        { password: hashPassword(data.newPassword) }, // Thay đổi password thành giá trị mới
         { where: { id: data.user_id }, transaction: t }
       );
     }

@@ -17,7 +17,13 @@ const getNewsBySort = async (
     const condition3 = category_id ? { category_id: category_id } : {};
     const condition4 = user_id && role != "admin" ? { user_id: user_id } : {};
     const { count, rows } = await db.News.findAndCountAll({
-      where: { ...condition1, ...condition2, ...condition3, ...condition4 },
+      where: {
+        ...condition1,
+        ...condition2,
+        ...condition3,
+        ...condition4,
+        ishidden: 0,
+      },
       include: [
         {
           model: db.Users,
@@ -66,7 +72,6 @@ const createNews = async (news) => {
   }
 };
 const getNewsById = async (id, user_id, role) => {
-  console.log(user_id, role);
   try {
     const news = await db.News.findOne({
       where: { id: id },

@@ -20,12 +20,14 @@ const getAllFee = async (
       include: [
         {
           model: db.Schoolyears,
-          attributes: [], // Không cần lấy thuộc tính của schoolyears trong kết quả chính
+          attributes: ["name"],
+        },
+        {
+          model: db.Semesters,
+          attributes: ["name"],
         },
       ],
-      order: [
-        [db.Schoolyears, "name", "DESC"], // Sắp xếp theo name của schoolyears tăng dần
-      ],
+      order: [[db.Schoolyears, "name", "DESC"]],
     });
     if (rows && count) {
       return {
@@ -44,7 +46,19 @@ const getAllFee = async (
 
 const getFeeById = async (id) => {
   try {
-    const res = await db.Fees.findOne({ where: { id: id } });
+    const res = await db.Fees.findOne({
+      where: { id: id },
+      include: [
+        {
+          model: db.Schoolyears,
+          attributes: ["name"],
+        },
+        {
+          model: db.Semesters,
+          attributes: ["name"],
+        },
+      ],
+    });
     if (res) {
       return { status: 200, code: 0, message: "success", data: res };
     } else {

@@ -73,12 +73,9 @@ const registerSubject = async (data) => {
 };
 const delSubjectOfTeacher = async (id) => {
   try {
-    const res = db.User_Subject.update(
-      { ishidden: 1 },
-      {
-        where: { id: id },
-      }
-    );
+    const res = db.User_Subject.delete({
+      where: { id: id },
+    });
     if (res) {
       return { status: 200, code: 0, message: "success", data: res };
     } else {

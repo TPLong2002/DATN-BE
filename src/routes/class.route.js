@@ -13,5 +13,6 @@ router.get("/subjects", classController.getSubjectsByClassId);
 router.delete("/subjects", classController.deleteSubjectFromClass);
 router.get("/countclasses", classController.countClassesByGrade);
 router.get("/grade", classController.getGradeByClassId);
+router.get("/schoolyear", classController.getClassesBySchoolyear);
 
 export default router;

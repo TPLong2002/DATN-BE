@@ -102,6 +102,16 @@ const getGradeByClassId = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+const getClassesBySchoolyear = async (req, res) => {
+  try {
+    const classes = await classService.getClassesBySchoolyear(
+      req.query.schoolyear_id
+    );
+    res.status(200).json(classes);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 module.exports = {
   getAllClass,
   createClass,
@@ -114,4 +124,5 @@ module.exports = {
   deleteSubjectFromClass,
   countClassesByGrade,
   getGradeByClassId,
+  getClassesBySchoolyear,
 };

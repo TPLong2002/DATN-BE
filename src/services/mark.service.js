@@ -104,64 +104,70 @@ const getMatksOfStudentsInClass = async (
 
     const userIdsInClass = usersInClass.map((user) => user.user_id);
 
-    // Lấy các bảng điểm hiện có
-    const existingMarks = await db.Marks.findAll({
-      where: {
-        subject_id: subject_id,
-        user_id: {
-          [Op.in]: userIdsInClass,
-        },
-        schoolyear_id: schoolyear_id,
-        semester_id: semester_id,
-      },
-    });
+    // const existingMarks = await db.Marks.findAll({
+    //   where: {
+    //     subject_id: subject_id,
+    //     user_id: {
+    //       [Op.in]: userIdsInClass,
+    //     },
+    //     schoolyear_id: schoolyear_id,
+    //     semester_id: semester_id,
+    //   },
+    // });
 
-    const userIdsWithMarks = existingMarks.map((mark) => mark.user_id);
+    // const userIdsWithMarks = existingMarks.map((mark) => mark.user_id);
 
-    // Xác định người dùng chưa có bảng điểm
-    const userIdsWithoutMarks = userIdsInClass.filter(
-      (userId) => !userIdsWithMarks.includes(userId)
-    );
+    // // Xác định người dùng chưa có bảng điểm
+    // const userIdsWithoutMarks = userIdsInClass.filter(
+    //   (userId) => !userIdsWithMarks.includes(userId)
+    // );
 
-    // Tạo bảng điểm cho những người dùng chưa có
-    const newMarksData = userIdsWithoutMarks.map((userId) => ({
-      user_id: userId,
-      subject_id: subject_id,
-      schoolyear_id: schoolyear_id,
-      semester_id: semester_id,
-      mark: 0, // Giá trị khởi tạo cho mark, có thể điều chỉnh nếu cần
-    }));
+    // // Tạo bảng điểm cho những người dùng chưa có
+    // const newMarksData = userIdsWithoutMarks.map((userId) => ({
+    //   user_id: userId,
+    //   subject_id: subject_id,
+    //   schoolyear_id: schoolyear_id,
+    //   semester_id: semester_id,
+    //   mark: 0, // Giá trị khởi tạo cho mark, có thể điều chỉnh nếu cần
+    // }));
 
-    if (newMarksData.length > 0) {
-      await db.Marks.bulkCreate(newMarksData);
-    }
+    // if (newMarksData.length > 0) {
+    //   await db.Marks.bulkCreate(newMarksData);
+    // }
 
     // Lấy lại tất cả bảng điểm bao gồm các liên kết
-    const res = await db.Marks.findAll({
+    const res = await db.Users.findAll({
       where: {
-        subject_id: subject_id,
-        user_id: {
+        id: {
           [Op.in]: userIdsInClass,
         },
-        schoolyear_id: schoolyear_id,
-        semester_id: semester_id,
       },
       include: [
         {
-          model: db.Users,
-          include: {
-            model: db.Profiles,
+          model: db.Profiles,
+          attributes: ["firstname", "lastname"],
+        },
+        {
+          model: db.Marks,
+          required: false, // Left join
+          where: {
+            subject_id: subject_id,
+            schoolyear_id: schoolyear_id,
+            semester_id: semester_id,
           },
-        },
-        {
-          model: db.Subjects,
-          attributes: ["name"],
-        },
-        {
-          model: db.Marktypes,
-          attributes: ["name"],
+          include: [
+            {
+              model: db.Subjects,
+              attributes: ["name"],
+            },
+            {
+              model: db.Marktypes,
+              attributes: ["name"],
+            },
+          ],
         },
       ],
+      attributes: ["id", "username"],
     });
     if (res) {
       return { status: 200, message: "success", code: 0, data: res };

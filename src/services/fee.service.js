@@ -92,11 +92,12 @@ const updateFee = async (data) => {
     return { status: 500, code: -1, message: error.message, data: "" };
   }
 };
-const getStudentsOfFee = async (fee_id) => {
-  const res = await db.Fees.findOne({
-    where: { id: fee_id },
-    include: [
-      {
+const getStudentsOfFee = async (fee_id, page = 1, limit = 10) => {
+  const offset = (page - 1) * limit;
+  try {
+    const { rows, count } = await db.Fees.findAndCountAll({
+      where: { id: fee_id },
+      include: {
         model: db.Users,
         as: "Fee_Users",
         include: [
@@ -110,6 +111,8 @@ const getStudentsOfFee = async (fee_id) => {
                 attributes: ["code"],
               },
             ],
+            offset: +offset,
+            limit: +limit,
           },
           {
             model: db.Profiles,
@@ -124,15 +127,23 @@ const getStudentsOfFee = async (fee_id) => {
             },
           },
         ],
+
         through: { attributes: ["ishidden"] },
         attributes: ["id", "username"],
       },
-    ],
-  });
-  if (res) {
-    return { status: 200, code: 0, message: "success", data: res };
-  } else {
-    return { status: 500, code: 1, message: "fail", data: "" };
+    });
+    if (rows && count) {
+      return {
+        status: 200,
+        code: 0,
+        message: "success",
+        data: { rows, count },
+      };
+    } else {
+      return { status: 500, code: 1, message: "fail", data: "" };
+    }
+  } catch (error) {
+    return { status: 500, code: -1, message: error.message, data: "" };
   }
 };
 const deleteUsersOfFee = async (data) => {
@@ -179,14 +190,18 @@ const deleteUsersOfFee = async (data) => {
     return { status: 500, code: -1, message: error.message, data: "" };
   }
 };
-const getStudentNotInFee = async (fee_id) => {
+const getStudentNotInFee = async (fee_id, schoolyear_id) => {
+  console.log(fee_id, schoolyear_id);
   try {
     const res = await db.Users.findAll({
       include: [
         {
           model: db.Fees,
           as: "User_Fees",
-          through: { where: { ishidden: 0 }, attributes: [] },
+          through: {
+            where: { ishidden: 0 },
+            attributes: [],
+          },
         },
         {
           model: db.Groups,
@@ -206,9 +221,11 @@ const getStudentNotInFee = async (fee_id) => {
             `(SELECT user_id FROM User_Fee WHERE fee_id = ${fee_id} AND ishidden = 0)`
           ),
         },
+        schoolyear_id: schoolyear_id,
+        isdeleted: 0,
       },
     });
-    if (res) {
+    if (res.length > 0) {
       return { status: 200, code: 0, message: "Success", data: res };
     } else {
       return { status: 500, code: 1, message: "Not found", data: [] };

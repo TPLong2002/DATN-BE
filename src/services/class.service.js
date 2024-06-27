@@ -200,7 +200,7 @@ const getSubjectsByClassId = async (classId) => {
           include: {
             model: db.Users,
             as: "Subject_Users",
-            through: { attributes: [] },
+            through: { attributes: [], where: { class_id: classId } },
             include: {
               model: db.Profiles,
               attributes: ["id", "firstname", "lastname"],
@@ -228,12 +228,13 @@ const getSubjectsByClassId = async (classId) => {
 const deleteSubjectFromClass = async (data) => {
   try {
     console.log(data);
-    const res = await db.Class_Subject_User.update(
-      { ishidden: 1 },
-      {
-        where: { class_id: data.class_id, subject_id: data.subject_id },
-      }
-    );
+    const res = await db.Class_Subject_User.destroy({
+      where: {
+        class_id: +data.class_id,
+        subject_id: +data.subject_id,
+        teacher_id: +data.teacher_id,
+      },
+    });
     if (res) {
       return { status: 200, code: 0, message: "success", data: res };
     } else {

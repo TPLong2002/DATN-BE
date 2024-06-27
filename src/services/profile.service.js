@@ -121,13 +121,15 @@ const getRelativesByUserId = async (userId) => {
       raw: true,
       nest: true,
     });
+
     let isRelative = null;
-    if (user.Group.name == "parent") {
+    if (user.Group.name === "parent") {
       isRelative = "User_Parents";
-    }
-    if (user.Group.name == "student") {
+    } else if (user.Group.name === "student") {
       isRelative = "User_Students";
     }
+
+    // Lấy danh sách relatives
     const res = await db.Users.findAll({
       where: { id: userId },
       include: [
@@ -143,26 +145,40 @@ const getRelativesByUserId = async (userId) => {
       raw: true,
       nest: true,
     });
-    if (res) {
-      const relatives = res.map((parent) => {
-        return {
-          ...parent[isRelative].Profile,
-          email: parent[isRelative].email,
-          password: parent[isRelative].password,
-          user_id: parent[isRelative].id,
-        };
-      });
+
+    if (res && res.length > 0) {
+      const relatives = await Promise.all(
+        res.map(async (parent) => {
+          const [profile, created] = await db.Profiles.findOrCreate({
+            where: { user_id: parent[isRelative].id },
+            defaults: {
+              firstname: "Default Firstname", // Điều chỉnh thông tin profile theo yêu cầu
+              lastname: "Default Lastname",
+            },
+          });
+          return {
+            ...profile.get({ plain: true }),
+            email: parent[isRelative].email,
+            password: parent[isRelative].password,
+            user_id: parent[isRelative].id,
+          };
+        })
+      );
+
       return {
         status: 200,
         code: 0,
         message: "success",
         data: relatives,
       };
-    } else return { status: 500, code: 1, message: "fail", data: "" };
+    } else {
+      return { status: 500, code: 1, message: "fail", data: "" };
+    }
   } catch (error) {
     return { status: 500, code: -1, message: error.message, data: "" };
   }
 };
+
 module.exports = {
   getProfileByUserId,
   updateProfileByUserId,

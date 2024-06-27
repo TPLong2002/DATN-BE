@@ -1,5 +1,5 @@
 import db from "../models";
-import { Op, where } from "sequelize";
+import { Op, or, where } from "sequelize";
 const getAllAssignmentsByStudentId = async (
   student_id,
   limit = 10,
@@ -199,7 +199,7 @@ const countStudentBySchoolyear = async () => {
           attributes: ["name"],
         },
       ],
-      where: { isdeleted: 0 },
+      order: [[db.Schoolyears, "name", "ASC"]],
       group: ["schoolyear_id"],
     });
     if (res) {
